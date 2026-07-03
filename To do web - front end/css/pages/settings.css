@@ -1,0 +1,42 @@
+/* ==========================================================================
+   Settings page
+   ========================================================================== */
+
+.settings-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: var(--sp-6); align-items: start; }
+.settings-nav { position: sticky; top: calc(var(--sp-4) + 68px); display: flex; flex-direction: column; gap: 2px; }
+.settings-nav a {
+  padding: 0.65rem 0.9rem; border-radius: var(--r-md); font-size: var(--fs-xs); font-weight: 700; color: var(--text-secondary);
+  display: flex; align-items: center; gap: 10px;
+}
+.settings-nav a svg { width: 16px; height: 16px; }
+.settings-nav a:hover { background: var(--bg-sunken); color: var(--text-primary); }
+.settings-nav a.is-active { background: var(--brand-soft); color: var(--brand-strong); }
+
+.settings-section { margin-bottom: var(--sp-6); scroll-margin-top: 90px; }
+.settings-section-head { margin-bottom: var(--sp-4); }
+.settings-section-head h3 { font-size: var(--fs-lg); }
+.settings-section-head p { font-size: var(--fs-xs); }
+
+.theme-preview-row { display: flex; gap: var(--sp-4); flex-wrap: wrap; }
+.theme-preview-card {
+  width: 140px; border-radius: var(--r-lg); border: 2px solid var(--border-default); overflow: hidden; cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+.theme-preview-card.is-active { border-color: var(--brand); }
+.theme-preview-swatch { height: 84px; }
+.theme-preview-swatch.day { background: linear-gradient(160deg, #f7f6ff, #eef8ff); }
+.theme-preview-swatch.night { background: linear-gradient(160deg, #100f1c, #1a1930); }
+.theme-preview-swatch.auto { background: linear-gradient(90deg, #f7f6ff 50%, #100f1c 50%); }
+.theme-preview-label { text-align: center; padding: 8px; font-size: var(--fs-2xs); font-weight: 700; }
+
+.select-inline { max-width: 260px; }
+
+.danger-zone { border: 1.5px solid hsl(0 80% 88%); background: hsl(0 90% 98%); }
+[data-theme="night"] .danger-zone { border-color: hsl(0 45% 30%); background: hsl(0 40% 12%); }
+.danger-zone h4 { color: var(--coral-600); }
+
+@media (max-width: 900px) {
+  .settings-layout { grid-template-columns: minmax(0, 1fr); }
+  .settings-nav { position: static; flex-direction: row; overflow-x: auto; padding-bottom: 4px; max-width: 100%; }
+  .settings-nav a { flex-shrink: 0; }
+}

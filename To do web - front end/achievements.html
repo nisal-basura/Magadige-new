@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Achievements — Magadige Task</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    var ov = localStorage.getItem("magadige_theme_override");
+    var h = new Date().getHours();
+    var period = ov === "day" ? "afternoon" : ov === "night" ? "night" : (h >= 5 && h < 12 ? "morning" : h >= 12 && h < 17 ? "afternoon" : h >= 17 && h < 21 ? "evening" : "night");
+    document.documentElement.setAttribute("data-theme", period === "night" ? "night" : "day");
+    document.documentElement.setAttribute("data-period", period);
+  })();
+</script>
+<link rel="stylesheet" href="css/variables.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/animations.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/layout.css" />
+<link rel="stylesheet" href="css/pages/dashboard.css" />
+<link rel="stylesheet" href="css/pages/achievements.css" />
+</head>
+<body>
+
+<div class="app-shell" id="appShell">
+  <div class="shell-content">
+    <div id="topbarSlot"></div>
+
+    <main class="main-content page-enter" id="mainContent">
+
+      <div class="ach-hero">
+        <div class="ach-hero-stat"><div class="val" id="achEarnedCount">—</div><div class="lbl">Badges Earned</div></div>
+        <div class="ach-hero-divider"></div>
+        <div class="ach-hero-stat"><div class="val" id="achScore">—</div><div class="lbl">Productivity Score</div></div>
+        <div class="ach-hero-divider"></div>
+        <div class="ach-hero-stat"><div class="val" id="achStreak">—</div><div class="lbl">Current Streak</div></div>
+        <div class="ach-hero-divider"></div>
+        <div class="ach-hero-stat"><div class="val" id="achLongest">—</div><div class="lbl">Longest Streak</div></div>
+      </div>
+
+      <div class="bento">
+        <div class="g-8">
+          <div class="section-head"><div><h3>All Badges</h3><p>Keep working the system to unlock the rest</p></div></div>
+          <div class="ach-grid" id="achGrid"></div>
+        </div>
+
+        <div class="card g-4 anim-fade-up">
+          <div class="section-head"><div><h3>Milestones</h3><p>When you earned each badge</p></div></div>
+          <div class="timeline" id="achTimeline"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="js/icons.js"></script>
+<script src="js/data.js"></script>
+<script src="js/quotes.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/achievements.js"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Task Details — Magadige Task</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    var ov = localStorage.getItem("magadige_theme_override");
+    var h = new Date().getHours();
+    var period = ov === "day" ? "afternoon" : ov === "night" ? "night" : (h >= 5 && h < 12 ? "morning" : h >= 12 && h < 17 ? "afternoon" : h >= 17 && h < 21 ? "evening" : "night");
+    document.documentElement.setAttribute("data-theme", period === "night" ? "night" : "day");
+    document.documentElement.setAttribute("data-period", period);
+  })();
+</script>
+<link rel="stylesheet" href="css/variables.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/animations.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/layout.css" />
+<link rel="stylesheet" href="css/pages/tasks.css" />
+<link rel="stylesheet" href="css/pages/task-details.css" />
+</head>
+<body>
+
+<div class="app-shell" id="appShell">
+  <div class="shell-content">
+    <div id="topbarSlot"></div>
+
+    <main class="main-content page-enter" id="mainContent">
+
+      <a href="tasks.html" class="link-more" style="margin-bottom:var(--sp-5);display:inline-flex;">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6 9 12l6 6"/></svg>
+        Back to Tasks
+      </a>
+
+      <div class="td-header">
+        <div>
+          <h2 id="tdTitle">—</h2>
+          <div class="td-meta-row">
+            <span class="badge" id="tdStatusBadge">—</span>
+            <span class="flex items-center gap-1"><span class="priority-dot" id="tdPriorityDot"></span> <span id="tdPriorityLabel">—</span> priority</span>
+            <span id="tdCategoryLabel">—</span>
+            <span>Due <strong id="tdDue">—</strong></span>
+          </div>
+        </div>
+        <div class="td-header-actions">
+          <button class="btn btn-secondary" id="tdFavBtn"><span id="tdFavIcon"></span> Favorite</button>
+          <button class="btn btn-secondary" id="tdEditBtn"><span id="tdEditIcon"></span> Edit</button>
+          <button class="btn btn-danger" id="tdDeleteBtn"><span id="tdDeleteIcon"></span> Delete</button>
+        </div>
+      </div>
+
+      <div class="td-layout">
+        <div>
+          <div class="card" style="margin-bottom:var(--sp-5);">
+            <div class="drawer-section-label">Description</div>
+            <p id="tdDescription" style="font-size:var(--fs-sm);">—</p>
+
+            <div class="divider"></div>
+
+            <div class="flex items-center justify-between" style="margin-bottom:var(--sp-2);">
+              <div class="drawer-section-label" style="margin:0;">Progress</div>
+              <strong id="tdProgressPct" style="font-size:var(--fs-xs);">0%</strong>
+            </div>
+            <div class="progress-bar" style="margin-bottom:var(--sp-5);"><div class="progress-bar-fill" id="tdProgressFill" style="width:0%"></div></div>
+
+            <div class="drawer-section-label">Subtasks</div>
+            <div id="subtaskChecklist"></div>
+          </div>
+
+          <div class="card">
+            <div class="tabs td-tabs" id="tdTabs">
+              <button class="tab is-active" data-tab="timeline">Timeline</button>
+              <button class="tab" data-tab="comments">Comments</button>
+              <button class="tab" data-tab="activity">Activity</button>
+              <button class="tab" data-tab="history">Completion History</button>
+            </div>
+
+            <div class="tab-panel" id="panel-timeline">
+              <div class="timeline" id="timelineList"></div>
+            </div>
+
+            <div class="tab-panel" id="panel-comments" hidden>
+              <div id="commentList"></div>
+              <div class="comment-input-row">
+                <div class="avatar-text" style="width:36px;height:36px;font-size:11px;" id="commentAvatarInit"></div>
+                <textarea class="textarea" id="newCommentInput" placeholder="Add a comment…"></textarea>
+              </div>
+              <div class="flex justify-between" style="margin-top:var(--sp-3);">
+                <span></span>
+                <button class="btn btn-primary btn-sm" id="postCommentBtn">Post comment</button>
+              </div>
+            </div>
+
+            <div class="tab-panel" id="panel-activity" hidden>
+              <div id="tdActivityList"></div>
+            </div>
+
+            <div class="tab-panel" id="panel-history" hidden>
+              <p style="font-size:var(--fs-xs);margin-bottom:var(--sp-3);">Last 8 weeks of activity on this task.</p>
+              <div class="history-strip" id="historyStrip"></div>
+            </div>
+          </div>
+        </div>
+
+        <aside>
+          <div class="card" style="margin-bottom:var(--sp-5);">
+            <div class="drawer-section-label">Details</div>
+            <div class="score-detail-row"><span class="text-secondary">Status</span><strong id="sideStatus">—</strong></div>
+            <div class="score-detail-row"><span class="text-secondary">Priority</span><strong id="sidePriority">—</strong></div>
+            <div class="score-detail-row"><span class="text-secondary">Category</span><strong id="sideCategory">—</strong></div>
+            <div class="score-detail-row"><span class="text-secondary">Due date</span><strong id="sideDue">—</strong></div>
+            <div class="score-detail-row"><span class="text-secondary">Estimated time</span><strong id="sideEstimate">—</strong></div>
+            <div class="score-detail-row"><span class="text-secondary">Created</span><strong id="sideCreated">—</strong></div>
+          </div>
+
+          <div class="card" style="margin-bottom:var(--sp-5);">
+            <div class="drawer-section-label">Tags</div>
+            <div class="task-card-tags" id="sideTags"></div>
+          </div>
+
+          <div class="card" id="relatedDreamCard" hidden>
+            <div class="drawer-section-label">Linked Dream</div>
+            <div class="dream-nudge" id="relatedDreamContent"></div>
+          </div>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="js/icons.js"></script>
+<script src="js/data.js"></script>
+<script src="js/quotes.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/task-details.js"></script>
+</body>
+</html>

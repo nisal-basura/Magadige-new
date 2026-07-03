@@ -1,0 +1,43 @@
+/* ==========================================================================
+   Dream Board
+   ========================================================================== */
+
+.dream-banner {
+  background: var(--hero-gradient); color: #fff; border-radius: var(--r-2xl);
+  padding: var(--sp-8); margin-bottom: var(--sp-6); position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sp-6); flex-wrap: wrap;
+}
+.dream-banner::before { content: "✦"; position: absolute; font-size: 8rem; opacity: 0.12; top: -30px; right: 30px; }
+.dream-banner h2 { color: #fff; margin-bottom: 6px; font-size: var(--fs-xl); }
+.dream-banner p { color: rgba(255,255,255,0.85); font-size: var(--fs-sm); max-width: 480px; }
+
+.dream-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--sp-5); }
+
+.dream-card { display: flex; flex-direction: column; gap: var(--sp-4); position: relative; overflow: hidden; }
+.dream-card-top { display: flex; align-items: flex-start; justify-content: space-between; }
+.dream-emoji-badge {
+  width: 52px; height: 52px; border-radius: var(--r-lg); display: grid; place-content: center;
+  font-size: 1.7rem; background: var(--card-gradient); border: 1px solid var(--border-subtle);
+}
+.dream-card-menu { color: var(--text-tertiary); }
+.dream-card h3 { font-size: var(--fs-lg); margin-bottom: 4px; }
+.dream-card-motivation { font-size: var(--fs-xs); font-style: italic; color: var(--text-secondary); line-height: 1.6; }
+.dream-progress-row { display: flex; align-items: center; justify-content: space-between; font-size: var(--fs-2xs); font-weight: 700; color: var(--text-tertiary); margin-bottom: 6px; }
+.dream-progress-row strong { color: var(--text-primary); font-size: var(--fs-sm); }
+.dream-card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: var(--sp-3); border-top: 1px solid var(--border-subtle); font-size: var(--fs-2xs); color: var(--text-tertiary); }
+.dream-card-footer strong { color: var(--text-primary); }
+.dream-related-tasks { display: flex; flex-direction: column; gap: 6px; }
+.dream-related-task { display: flex; align-items: center; gap: 8px; font-size: var(--fs-2xs); color: var(--text-secondary); }
+.dream-related-task .priority-dot { width: 6px; height: 6px; }
+
+.dream-add-card {
+  border: 2px dashed var(--border-strong); border-radius: var(--r-xl);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--sp-2);
+  min-height: 260px; color: var(--text-tertiary); cursor: pointer; transition: all var(--dur-base) var(--ease-out);
+}
+.dream-add-card:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+.dream-add-card-icon { width: 52px; height: 52px; border-radius: 50%; background: var(--bg-sunken); display: grid; place-content: center; }
+.dream-add-card:hover .dream-add-card-icon { background: var(--bg-surface); }
+
+/* Dream detail modal */
+.dream-color-dot { width: 10px; height: 10px; border-radius: 50%; }

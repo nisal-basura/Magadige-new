@@ -1,0 +1,33 @@
+/* ==========================================================================
+   Achievements page
+   ========================================================================== */
+
+.ach-hero {
+  display: flex; align-items: center; gap: var(--sp-8);
+  padding: var(--sp-8); border-radius: var(--r-2xl);
+  background: var(--hero-gradient); color: #fff; margin-bottom: var(--sp-6);
+  flex-wrap: wrap;
+}
+.ach-hero-stat { text-align: center; }
+.ach-hero-stat .val { font-family: var(--font-display); font-size: var(--fs-3xl); font-weight: 800; }
+.ach-hero-stat .lbl { font-size: var(--fs-2xs); color: rgba(255,255,255,0.8); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.ach-hero-divider { width: 1px; height: 48px; background: rgba(255,255,255,0.25); }
+
+.ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--sp-4); }
+.ach-card {
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--sp-3);
+  padding: var(--sp-6) var(--sp-4);
+}
+.ach-card.is-locked { opacity: 0.55; }
+.ach-card-icon {
+  width: 64px; height: 64px; border-radius: 50%; display: grid; place-content: center;
+  background: var(--brand-soft); color: var(--brand-strong);
+}
+.ach-card.is-locked .ach-card-icon { background: var(--bg-sunken); color: var(--text-tertiary); }
+.ach-card-icon svg { width: 28px; height: 28px; }
+.ach-card h4 { font-size: var(--fs-sm); }
+.ach-card p { font-size: var(--fs-2xs); }
+.ach-card-progress { width: 100%; }
+.ach-card-date { font-size: var(--fs-2xs); color: var(--mint-600); font-weight: 700; }
+
+@media (max-width: 640px) { .ach-hero { justify-content: center; text-align: center; } }

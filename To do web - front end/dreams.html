@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dream Board — Magadige Task</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    var ov = localStorage.getItem("magadige_theme_override");
+    var h = new Date().getHours();
+    var period = ov === "day" ? "afternoon" : ov === "night" ? "night" : (h >= 5 && h < 12 ? "morning" : h >= 12 && h < 17 ? "afternoon" : h >= 17 && h < 21 ? "evening" : "night");
+    document.documentElement.setAttribute("data-theme", period === "night" ? "night" : "day");
+    document.documentElement.setAttribute("data-period", period);
+  })();
+</script>
+<link rel="stylesheet" href="css/variables.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/animations.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/layout.css" />
+<link rel="stylesheet" href="css/pages/tasks.css" />
+<link rel="stylesheet" href="css/pages/dreams.css" />
+</head>
+<body>
+
+<div class="app-shell" id="appShell">
+  <div class="shell-content">
+    <div id="topbarSlot"></div>
+
+    <main class="main-content page-enter" id="mainContent">
+
+      <div class="dream-banner">
+        <div>
+          <h2>✦ Today's work builds tomorrow's dream.</h2>
+          <p>Every task you complete quietly moves one of these goals forward. Keep your dreams visible, and the daily grind starts to feel like progress.</p>
+        </div>
+        <button class="btn btn-accent btn-lg" id="addDreamBtnTop"><span id="plusIconTop"></span> Add a Dream</button>
+      </div>
+
+      <div class="section-head">
+        <div><h3>Your Dreams</h3><p id="dreamCount">— goals in motion</p></div>
+      </div>
+
+      <div class="dream-grid" id="dreamGrid"></div>
+
+      <div class="empty-state" id="dreamEmptyState" hidden>
+        <img src="assets/illustrations/empty-dreams.svg" class="empty-state-illustration" alt="" />
+        <h4>No dreams yet</h4>
+        <p>Big or small — define one life goal and watch your daily tasks quietly build toward it.</p>
+        <button class="btn btn-primary" id="addDreamBtnEmpty">Define your first dream</button>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Dream detail modal -->
+<div class="overlay" id="dreamOverlay" hidden></div>
+<div class="modal modal-lg" id="dreamModal" hidden></div>
+
+<!-- Create dream modal -->
+<div class="overlay" id="createDreamOverlay" hidden></div>
+<div class="modal" id="createDreamModal" hidden>
+  <div class="flex items-center justify-between" style="margin-bottom:var(--sp-5);">
+    <h3>Define a New Dream</h3>
+    <button class="icon-btn" id="closeCreateDreamBtn" style="width:34px;height:34px;"><span id="closeDreamIcon"></span></button>
+  </div>
+  <form id="dreamForm">
+    <div class="field" style="margin-bottom:var(--sp-4);">
+      <label class="field-label">Dream title</label>
+      <input class="input" type="text" id="dTitle" placeholder="e.g. Become a Software Architect" required />
+    </div>
+    <div class="field" style="margin-bottom:var(--sp-4);">
+      <label class="field-label">Emoji</label>
+      <div class="color-swatches" id="emojiSwatches">
+        <span class="chip is-active" data-emoji="🏛️">🏛️</span>
+        <span class="chip" data-emoji="🚀">🚀</span>
+        <span class="chip" data-emoji="🗾">🗾</span>
+        <span class="chip" data-emoji="🏡">🏡</span>
+        <span class="chip" data-emoji="💰">💰</span>
+        <span class="chip" data-emoji="🎓">🎓</span>
+        <span class="chip" data-emoji="🎨">🎨</span>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:var(--sp-4);">
+      <label class="field-label">Motivation — why does this matter?</label>
+      <textarea class="textarea" id="dMotivation" placeholder="Write a sentence that reminds future-you why you started…"></textarea>
+    </div>
+    <div class="field" style="margin-bottom:var(--sp-4);">
+      <label class="field-label">Target date</label>
+      <input class="input" type="date" id="dTarget" required />
+    </div>
+    <div class="flex items-center gap-3">
+      <button type="submit" class="btn btn-primary btn-lg">Save Dream</button>
+      <button type="button" class="btn btn-ghost" id="cancelDreamBtn">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<script src="js/icons.js"></script>
+<script src="js/data.js"></script>
+<script src="js/quotes.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/dreams.js"></script>
+</body>
+</html>

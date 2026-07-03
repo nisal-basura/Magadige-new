@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter test *)",
+      "Bash(flutter config *)",
+      "Bash(\"build/windows/x64/runner/Debug/to_do_app.exe\")",
+      "Bash(disown)",
+      "Bash(cat /tmp/app_stdout.log 2>/dev/null | tail -60)",
+      "Read(//tmp/**)",
+      "Bash(taskkill //F //IM to_do_app.exe)",
+      "Bash(cp \"C:/Users/User/AppData/Local/Temp/claude/d--Magadige-new/7db06437-63b3-4acc-9179-34b743598211/scratchpad/responsive_check_test.dart\" test/responsive_check_test.dart)"
+    ]
+  }
+}

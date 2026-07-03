@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tasks — Magadige Task</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    var ov = localStorage.getItem("magadige_theme_override");
+    var h = new Date().getHours();
+    var period = ov === "day" ? "afternoon" : ov === "night" ? "night" : (h >= 5 && h < 12 ? "morning" : h >= 12 && h < 17 ? "afternoon" : h >= 17 && h < 21 ? "evening" : "night");
+    document.documentElement.setAttribute("data-theme", period === "night" ? "night" : "day");
+    document.documentElement.setAttribute("data-period", period);
+  })();
+</script>
+<link rel="stylesheet" href="css/variables.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/animations.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/layout.css" />
+<link rel="stylesheet" href="css/pages/tasks.css" />
+</head>
+<body>
+
+<div class="app-shell" id="appShell">
+  <div class="shell-content">
+    <div id="topbarSlot"></div>
+
+    <main class="main-content page-enter" id="mainContent">
+
+      <div class="view-switch-wrap">
+        <div>
+          <h2 style="margin-bottom:2px;">Task Management</h2>
+          <span class="result-count" id="resultCount">— tasks</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="tabs" id="viewSwitch">
+            <button class="tab is-active" data-view="grid" id="tabGrid"></button>
+            <button class="tab" data-view="table" id="tabTable"></button>
+            <button class="tab" data-view="kanban" id="tabKanban"></button>
+          </div>
+          <button class="btn btn-primary" id="newTaskBtn"><span id="plusIcon"></span> New Task</button>
+        </div>
+      </div>
+
+      <div class="tasks-toolbar">
+        <div class="topbar-search" style="background:var(--bg-surface);border:1px solid var(--border-subtle);">
+          <span id="searchIcon"></span>
+          <input type="text" id="taskSearch" placeholder="Search tasks by title, tag…" />
+        </div>
+        <div class="tabs" id="sortSwitch">
+          <button class="tab is-active" data-sort="due">Due date</button>
+          <button class="tab" data-sort="priority">Priority</button>
+          <button class="tab" data-sort="created">Newest</button>
+        </div>
+      </div>
+
+      <div class="filter-row" id="filterRow">
+        <button class="chip is-active" data-filter-status="all"><span id="filterIcon"></span> All</button>
+        <button class="chip" data-filter-status="pending">Pending</button>
+        <button class="chip" data-filter-status="in-progress">In progress</button>
+        <button class="chip" data-filter-status="completed">Completed</button>
+        <button class="chip" data-filter-status="overdue">Overdue</button>
+        <span style="width:1px;height:20px;background:var(--border-default);"></span>
+        <button class="chip" data-filter-priority="high">High priority</button>
+        <button class="chip" data-filter-favorite="1">★ Favorites</button>
+      </div>
+
+      <div id="bulkBar" class="bulk-bar" hidden>
+        <span><strong id="bulkCount">0</strong> selected</span>
+        <div class="bulk-bar-actions">
+          <button id="bulkComplete"><span id="bcIcon"></span> Complete</button>
+          <button id="bulkArchive"><span id="baIcon"></span> Archive</button>
+          <button id="bulkDuplicate"><span id="bdIcon"></span> Duplicate</button>
+          <button id="bulkDelete"><span id="btIcon"></span> Delete</button>
+        </div>
+      </div>
+
+      <!-- Grid view -->
+      <div class="task-grid" id="taskGrid"></div>
+
+      <!-- Table view -->
+      <div class="task-table-wrap" id="taskTableWrap" hidden>
+        <table class="task-table">
+          <thead>
+            <tr>
+              <th style="width:36px;"><input type="checkbox" class="checkbox" id="selectAllRows" /></th>
+              <th data-sort-col="title">Task</th>
+              <th data-sort-col="category">Category</th>
+              <th data-sort-col="priority">Priority</th>
+              <th data-sort-col="status">Status</th>
+              <th data-sort-col="due">Due</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="taskTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Kanban view -->
+      <div class="kanban-wrap" id="kanbanWrap" hidden></div>
+
+      <!-- Empty search state -->
+      <div class="empty-state" id="emptyState" hidden>
+        <img src="assets/illustrations/empty-search.svg" class="empty-state-illustration" alt="" />
+        <h4>No matching tasks</h4>
+        <p>Try a different search term or clear your filters to see everything again.</p>
+        <button class="btn btn-secondary" id="clearFiltersBtn">Clear filters</button>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Task quick-view drawer -->
+<div class="overlay" id="drawerOverlay" hidden></div>
+<aside class="drawer" id="taskDrawer" hidden></aside>
+
+<!-- Create / Edit Task Modal -->
+<div class="overlay" id="modalOverlay" hidden></div>
+<div class="modal modal-lg" id="createTaskModal" hidden>
+  <div class="flex items-center justify-between" style="margin-bottom:var(--sp-5);">
+    <h3 id="taskModalTitle">Create Task</h3>
+    <button class="icon-btn" id="closeModalBtn" style="width:34px;height:34px;"><span id="closeIcon"></span></button>
+  </div>
+  <form id="taskForm">
+    <div class="form-grid">
+      <div class="field span-2">
+        <label class="field-label">Title</label>
+        <input class="input" type="text" id="ctTitle" placeholder="e.g. Design onboarding flow" required />
+      </div>
+      <div class="field span-2">
+        <label class="field-label">Description</label>
+        <textarea class="textarea" id="ctDescription" placeholder="Add more detail…"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">Priority</label>
+        <select class="select" id="ctPriority">
+          <option value="low">Low</option>
+          <option value="medium" selected>Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label">Category</label>
+        <select class="select" id="ctCategory"></select>
+      </div>
+      <div class="field">
+        <label class="field-label">Deadline</label>
+        <input class="input" type="date" id="ctDeadline" />
+      </div>
+      <div class="field">
+        <label class="field-label">Estimated time</label>
+        <input class="input" type="text" id="ctEstimate" placeholder="e.g. 1h 30m" />
+      </div>
+      <div class="field">
+        <label class="field-label">Reminder</label>
+        <select class="select" id="ctReminder">
+          <option value="none">No reminder</option>
+          <option value="10m">10 minutes before</option>
+          <option value="1h">1 hour before</option>
+          <option value="1d">1 day before</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label">Repeat</label>
+        <select class="select" id="ctRepeat">
+          <option value="none">Doesn't repeat</option>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+      <div class="field span-2">
+        <label class="field-label">Color tag</label>
+        <div class="color-swatches" id="colorSwatches">
+          <span class="color-swatch is-active" data-color="#6c4eff" style="background:#6c4eff;"></span>
+          <span class="color-swatch" data-color="#1f97f2" style="background:#1f97f2;"></span>
+          <span class="color-swatch" data-color="#fa8f0f" style="background:#fa8f0f;"></span>
+          <span class="color-swatch" data-color="#22c58b" style="background:#22c58b;"></span>
+          <span class="color-swatch" data-color="#ff6b6b" style="background:#ff6b6b;"></span>
+        </div>
+      </div>
+      <div class="field span-2">
+        <label class="field-label">Subtasks</label>
+        <div id="subtaskList" style="display:flex;flex-direction:column;gap:8px;"></div>
+        <button type="button" class="btn btn-ghost btn-sm" id="addSubtaskBtn" style="align-self:flex-start;margin-top:6px;"><span id="addSubIcon"></span> Add subtask</button>
+      </div>
+      <div class="field span-2">
+        <label class="field-label">Attachments</label>
+        <div class="attachment-drop" id="attachmentDrop">
+          <span id="paperclipIcon"></span>
+          <div>Click to attach files, or drag & drop</div>
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3" style="margin-top:var(--sp-6);">
+      <button type="submit" class="btn btn-primary btn-lg">Save Task</button>
+      <button type="button" class="btn btn-ghost" id="cancelModalBtn">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<script src="js/icons.js"></script>
+<script src="js/data.js"></script>
+<script src="js/quotes.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/tasks.js"></script>
+</body>
+</html>

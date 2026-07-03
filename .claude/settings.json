@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -sL -o SpaceGrotesk-Regular.ttf \"https://github.com/google/fonts/raw/main/ofl/spacegrotesk/SpaceGrotesk%5Bwght%5D.ttf\" --max-time 15)",
+      "Bash(file SpaceGrotesk-Regular.ttf)"
+    ]
+  }
+}

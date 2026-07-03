@@ -1,0 +1,36 @@
+/* ==========================================================================
+   Task Details page
+   ========================================================================== */
+
+.td-header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-6); margin-bottom: var(--sp-6); flex-wrap: wrap; }
+.td-header h2 { margin-bottom: 8px; }
+.td-meta-row { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; font-size: var(--fs-xs); }
+.td-header-actions { display: flex; gap: var(--sp-2); }
+
+.td-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: var(--sp-6); align-items: start; }
+
+.td-tabs { margin-bottom: var(--sp-5); }
+
+
+/* ---- Comments -------------------------------------------------------------- */
+.comment-item { display: flex; gap: var(--sp-3); padding: var(--sp-4) 0; border-bottom: 1px solid var(--border-subtle); }
+.comment-item:last-child { border-bottom: none; }
+.comment-bubble { flex: 1; }
+.comment-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.comment-head strong { font-size: var(--fs-xs); }
+.comment-head span { font-size: 11px; color: var(--text-tertiary); }
+.comment-text { font-size: var(--fs-xs); color: var(--text-secondary); }
+.comment-input-row { display: flex; gap: var(--sp-3); align-items: flex-start; padding-top: var(--sp-4); }
+.comment-input-row textarea { flex: 1; min-height: 60px; }
+
+/* ---- Activity --------------------------------------------------------------- */
+.td-activity-item { display: flex; gap: var(--sp-3); font-size: var(--fs-xs); padding: var(--sp-2) 0; }
+.td-activity-item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-strong); margin-top: 6px; flex-shrink: 0; }
+
+/* ---- Subtasks / checklist ------------------------------------------------- */
+.subtask-item { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-2) 0; }
+.subtask-item span.subtitle { flex: 1; font-size: var(--fs-sm); }
+.subtask-item.is-done .subtitle { text-decoration: line-through; color: var(--text-tertiary); }
+
+
+@media (max-width: 980px) { .td-layout { grid-template-columns: minmax(0, 1fr); } }

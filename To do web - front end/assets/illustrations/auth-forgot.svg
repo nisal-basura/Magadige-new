@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" width="100%" height="100%">
+  <defs>
+    <radialGradient id="glow3" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="240" cy="240" r="220" fill="url(#glow3)"/>
+  <g transform="translate(150,130)">
+    <rect x="0" y="40" width="180" height="140" rx="18" fill="#ffffff" opacity="0.9"/>
+    <path d="M20 60 90 110 160 60" stroke="#4527c2" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+    <rect x="20" y="60" width="140" height="100" rx="10" fill="none" stroke="#4527c2" stroke-width="4" opacity="0.4"/>
+  </g>
+  <g transform="translate(200,60)">
+    <circle r="34" cx="34" cy="34" fill="#ffffff" opacity="0.16"/>
+    <path d="M34 16v18l12 8" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g opacity="0.85">
+    <circle cx="110" cy="330" r="4" fill="#fff"><animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite"/></circle>
+    <circle cx="380" cy="300" r="5" fill="#fff"><animate attributeName="opacity" values="1;0.3;1" dur="2.6s" repeatCount="indefinite"/></circle>
+    <circle cx="360" cy="130" r="3" fill="#fff"><animate attributeName="opacity" values="0.3;1;0.3" dur="3.4s" repeatCount="indefinite"/></circle>
+  </g>
+</svg>

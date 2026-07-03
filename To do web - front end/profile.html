@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Profile — Magadige Task</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    var ov = localStorage.getItem("magadige_theme_override");
+    var h = new Date().getHours();
+    var period = ov === "day" ? "afternoon" : ov === "night" ? "night" : (h >= 5 && h < 12 ? "morning" : h >= 12 && h < 17 ? "afternoon" : h >= 17 && h < 21 ? "evening" : "night");
+    document.documentElement.setAttribute("data-theme", period === "night" ? "night" : "day");
+    document.documentElement.setAttribute("data-period", period);
+  })();
+</script>
+<link rel="stylesheet" href="css/variables.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/animations.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/layout.css" />
+<link rel="stylesheet" href="css/pages/dashboard.css" />
+<link rel="stylesheet" href="css/pages/profile.css" />
+</head>
+<body>
+
+<div class="app-shell" id="appShell">
+  <div class="shell-content">
+    <div id="topbarSlot"></div>
+
+    <main class="main-content page-enter" id="mainContent">
+
+      <div class="profile-header">
+        <div class="profile-avatar-wrap">
+          <div class="avatar-text" id="profileAvatar">—</div>
+          <button class="profile-avatar-edit" id="editAvatarBtn"><span id="editAvatarIcon"></span></button>
+        </div>
+        <div class="profile-header-info">
+          <h2 id="profileName">—</h2>
+          <p id="profileRole" class="text-secondary">—</p>
+          <div class="profile-header-meta">
+            <span id="profileEmail"></span>
+            <span id="profileMemberSince"></span>
+            <span id="profileTimezone"></span>
+          </div>
+        </div>
+        <div class="profile-header-actions">
+          <button class="btn btn-primary" id="editProfileBtn"><span id="editIcon"></span> Edit Profile</button>
+        </div>
+      </div>
+
+      <div class="stat-strip" id="profileStatStrip"></div>
+
+      <div class="bento">
+        <div class="card g-8 anim-fade-up">
+          <div class="section-head"><div><h3>Achievements</h3><p>Badges earned along the way</p></div></div>
+          <div class="badge-grid" id="profileBadgeGrid" style="grid-template-columns:repeat(3,1fr);"></div>
+        </div>
+
+        <div class="card g-4 anim-fade-up">
+          <h3 style="margin-bottom:var(--sp-4);">Productivity Score</h3>
+          <div class="score-wrap" style="flex-direction:column;text-align:center;">
+            <div class="score-ring" id="profileScoreRing" style="margin-inline:auto;"></div>
+            <p style="font-size:var(--fs-xs);margin-top:var(--sp-3);">Based on completion rate, streaks, and consistency over the last 30 days.</p>
+          </div>
+        </div>
+
+        <div class="card g-6 anim-fade-up">
+          <div class="section-head"><div><h3>Quick Theme</h3><p>Day, night, or automatic</p></div></div>
+          <div class="theme-toggle" data-theme-toggle style="width:fit-content;">
+            <button data-theme-set="day" data-tooltip="Day"><span id="themeSunIcon"></span></button>
+            <button data-theme-set="auto" data-tooltip="Auto"><span id="themeAutoIcon"></span></button>
+            <button data-theme-set="night" data-tooltip="Night"><span id="themeMoonIcon"></span></button>
+          </div>
+          <p style="font-size:var(--fs-xs);margin-top:var(--sp-4);">Manage more appearance options in <a href="settings.html" style="color:var(--brand);font-weight:700;">Settings</a>.</p>
+        </div>
+
+        <div class="card g-6 anim-fade-up">
+          <div class="section-head"><div><h3>Notifications</h3><p>What you're alerted about</p></div></div>
+          <div class="settings-row">
+            <div class="flex items-center gap-3"><div class="settings-row-icon"><span id="bellIcon"></span></div><div><div class="settings-row-label">Task reminders</div></div></div>
+            <label class="switch"><input type="checkbox" checked /><span class="switch-track"><span class="switch-thumb"></span></span></label>
+          </div>
+          <div class="settings-row">
+            <div class="flex items-center gap-3"><div class="settings-row-icon"><span id="flameIcon"></span></div><div><div class="settings-row-label">Streak alerts</div></div></div>
+            <label class="switch"><input type="checkbox" checked /><span class="switch-track"><span class="switch-thumb"></span></span></label>
+          </div>
+        </div>
+
+        <div class="card g-6 anim-fade-up">
+          <div class="section-head"><div><h3>Security</h3><p>Keep your account safe</p></div></div>
+          <div class="settings-row">
+            <div class="flex items-center gap-3"><div class="settings-row-icon"><span id="lockIcon"></span></div><div><div class="settings-row-label">Password</div><div class="settings-row-desc">Last changed 3 months ago</div></div></div>
+            <button class="btn btn-secondary btn-sm">Change</button>
+          </div>
+          <div class="settings-row">
+            <div class="flex items-center gap-3"><div class="settings-row-icon"><span id="shieldIcon"></span></div><div><div class="settings-row-label">Two-factor authentication</div><div class="settings-row-desc">Add an extra layer of security</div></div></div>
+            <label class="switch"><input type="checkbox" /><span class="switch-track"><span class="switch-thumb"></span></span></label>
+          </div>
+        </div>
+
+        <div class="card g-6 anim-fade-up">
+          <div class="section-head"><div><h3>Connected Accounts</h3><p>Sign-in providers linked to your profile</p></div></div>
+          <div class="connected-account">
+            <div class="connected-account-icon"><span id="googleIcon"></span></div>
+            <div style="flex:1;"><strong style="font-size:var(--fs-xs);">Google</strong><div class="settings-row-desc">nbcodezone@gmail.com</div></div>
+            <span class="badge badge-mint">Connected</span>
+          </div>
+          <div class="connected-account">
+            <div class="connected-account-icon"><span id="githubIcon"></span></div>
+            <div style="flex:1;"><strong style="font-size:var(--fs-xs);">GitHub</strong><div class="settings-row-desc">Not connected</div></div>
+            <button class="btn btn-secondary btn-sm">Connect</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="js/icons.js"></script>
+<script src="js/data.js"></script>
+<script src="js/quotes.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/profile.js"></script>
+</body>
+</html>

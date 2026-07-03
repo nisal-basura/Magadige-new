@@ -1,0 +1,139 @@
+/* ==========================================================================
+   Motion library — smooth, restrained, purposeful
+   ========================================================================== */
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Centered dialogs animate scale while keeping their translate(-50%,-50%)
+   centering — a plain `animation: scaleIn` would overwrite that transform
+   entirely, since keyframes replace the whole property, not merge with it. */
+@keyframes modalPopCentered {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.94); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(28px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.8); }
+  70% { transform: scale(1.03); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(258 90% 65% / 0.45); }
+  50% { box-shadow: 0 0 0 10px hsl(258 90% 65% / 0); }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes progressFill {
+  from { width: 0; }
+}
+
+@keyframes drawCircle {
+  from { stroke-dashoffset: var(--circ, 283); }
+}
+
+@keyframes ringPulse {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes bounceIn {
+  0% { opacity: 0; transform: translateY(10px) scale(0.96); }
+  60% { opacity: 1; transform: translateY(-2px) scale(1.01); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.anim-fade-in { animation: fadeIn var(--dur-slow) var(--ease-out) both; }
+.anim-fade-up { animation: fadeUp var(--dur-slow) var(--ease-out) both; }
+.anim-scale-in { animation: scaleIn var(--dur-base) var(--ease-spring) both; }
+.anim-pop { animation: popIn var(--dur-slow) var(--ease-spring) both; }
+.anim-float { animation: floatY 5s var(--ease-in-out) infinite; }
+.anim-float-slow { animation: floatSlow 7s var(--ease-in-out) infinite; }
+
+.stagger > * { animation: fadeUp var(--dur-slow) var(--ease-out) both; }
+.stagger > *:nth-child(1) { animation-delay: 0.04s; }
+.stagger > *:nth-child(2) { animation-delay: 0.09s; }
+.stagger > *:nth-child(3) { animation-delay: 0.14s; }
+.stagger > *:nth-child(4) { animation-delay: 0.19s; }
+.stagger > *:nth-child(5) { animation-delay: 0.24s; }
+.stagger > *:nth-child(6) { animation-delay: 0.29s; }
+.stagger > *:nth-child(7) { animation-delay: 0.34s; }
+.stagger > *:nth-child(8) { animation-delay: 0.39s; }
+
+/* ---- Skeleton / shimmer loading -------------------------------------- */
+.skeleton {
+  position: relative;
+  background: var(--bg-sunken);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  isolation: isolate;
+}
+.skeleton::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, hsl(0 0% 100% / 0.35), transparent);
+  background-size: 400px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+[data-theme="night"] .skeleton::after {
+  background: linear-gradient(90deg, transparent, hsl(255 60% 60% / 0.14), transparent);
+  background-size: 400px 100%;
+}
+
+/* ---- Page transition wrapper ------------------------------------------ */
+.page-enter { animation: fadeUp var(--dur-slow) var(--ease-out) both; }
+
+/* ---- Hover micro-interactions ------------------------------------------ */
+.hover-lift {
+  transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}

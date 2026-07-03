@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f2f0ff"/>
+      <stop offset="100%" stop-color="#eef8ff"/>
+    </linearGradient>
+    <linearGradient id="heroGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6c4eff"/>
+      <stop offset="100%" stop-color="#1f97f2"/>
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffab29"/>
+      <stop offset="100%" stop-color="#fa8f0f"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="440" rx="24" fill="url(#bgGrad)"/>
+  <rect x="24" y="24" width="150" height="392" rx="18" fill="#ffffff" opacity="0.9"/>
+  <rect x="46" y="52" width="106" height="14" rx="7" fill="#6c4eff"/>
+  <rect x="46" y="86" width="90" height="10" rx="5" fill="#e5e1ff"/>
+  <rect x="46" y="108" width="106" height="10" rx="5" fill="#eeeef7"/>
+  <rect x="46" y="130" width="80" height="10" rx="5" fill="#eeeef7"/>
+  <rect x="46" y="152" width="96" height="10" rx="5" fill="#eeeef7"/>
+  <circle cx="70" cy="370" r="20" fill="#dcf0ff"/>
+  <rect x="100" y="362" width="60" height="8" rx="4" fill="#c9c0ff"/>
+  <rect x="100" y="376" width="40" height="8" rx="4" fill="#eeeef7"/>
+
+  <rect x="196" y="24" width="420" height="110" rx="18" fill="url(#heroGrad)"/>
+  <rect x="222" y="50" width="180" height="16" rx="8" fill="#ffffff" opacity="0.95"/>
+  <rect x="222" y="76" width="240" height="10" rx="5" fill="#ffffff" opacity="0.7"/>
+  <circle cx="560" cy="79" r="34" fill="#ffffff" opacity="0.18"/>
+  <path d="M545 79l10 10 20-22" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="196" y="148" width="130" height="120" rx="16" fill="#ffffff"/>
+  <circle cx="261" cy="196" r="34" fill="none" stroke="#eeeef7" stroke-width="10"/>
+  <circle cx="261" cy="196" r="34" fill="none" stroke="url(#heroGrad)" stroke-width="10" stroke-dasharray="160 214" stroke-linecap="round" transform="rotate(-90 261 196)"/>
+  <text x="261" y="202" text-anchor="middle" font-family="Arial" font-weight="700" font-size="20" fill="#241468">74%</text>
+  <rect x="222" y="244" width="78" height="8" rx="4" fill="#eeeef7"/>
+
+  <rect x="338" y="148" width="130" height="120" rx="16" fill="#ffffff"/>
+  <rect x="358" y="174" width="90" height="10" rx="5" fill="#e5e1ff"/>
+  <rect x="358" y="196" width="16" height="52" rx="4" fill="#c9c0ff"/>
+  <rect x="382" y="210" width="16" height="38" rx="4" fill="#6c4eff"/>
+  <rect x="406" y="188" width="16" height="60" rx="4" fill="#a596ff"/>
+  <rect x="430" y="222" width="16" height="26" rx="4" fill="#dcf0ff"/>
+
+  <rect x="480" y="148" width="136" height="120" rx="16" fill="#ffffff"/>
+  <rect x="500" y="172" width="60" height="10" rx="5" fill="#ffedc2"/>
+  <circle cx="548" cy="220" r="26" fill="none" stroke="#ffedc2" stroke-width="8"/>
+  <circle cx="548" cy="220" r="26" fill="none" stroke="url(#amberGrad)" stroke-width="8" stroke-dasharray="100 164" stroke-linecap="round" transform="rotate(-90 548 220)"/>
+
+  <rect x="196" y="284" width="420" height="132" rx="18" fill="#ffffff"/>
+  <rect x="220" y="306" width="140" height="12" rx="6" fill="#1c1c29"/>
+  <rect x="220" y="334" width="372" height="1" fill="#eeeef7"/>
+  <circle cx="234" cy="360" r="9" fill="#22c58b"/>
+  <rect x="252" y="355" width="220" height="10" rx="5" fill="#5d5d76"/>
+  <circle cx="234" cy="388" r="9" fill="#fa8f0f"/>
+  <rect x="252" y="383" width="180" height="10" rx="5" fill="#5d5d76"/>
+</svg>

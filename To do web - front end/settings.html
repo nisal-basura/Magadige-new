@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Settings — Magadige Task</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    var ov = localStorage.getItem("magadige_theme_override");
+    var h = new Date().getHours();
+    var period = ov === "day" ? "afternoon" : ov === "night" ? "night" : (h >= 5 && h < 12 ? "morning" : h >= 12 && h < 17 ? "afternoon" : h >= 17 && h < 21 ? "evening" : "night");
+    document.documentElement.setAttribute("data-theme", period === "night" ? "night" : "day");
+    document.documentElement.setAttribute("data-period", period);
+  })();
+</script>
+<link rel="stylesheet" href="css/variables.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/animations.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/layout.css" />
+<link rel="stylesheet" href="css/pages/profile.css" />
+<link rel="stylesheet" href="css/pages/settings.css" />
+</head>
+<body>
+
+<div class="app-shell" id="appShell">
+  <div class="shell-content">
+    <div id="topbarSlot"></div>
+
+    <main class="main-content page-enter" id="mainContent">
+      <h2 style="margin-bottom:var(--sp-6);">Settings</h2>
+
+      <div class="settings-layout">
+        <nav class="settings-nav" id="settingsNav">
+          <a href="#appearance" class="is-active"><span id="navIconAppearance"></span> Appearance</a>
+          <a href="#notifications"><span id="navIconNotif"></span> Notifications</a>
+          <a href="#language"><span id="navIconLang"></span> Language</a>
+          <a href="#privacy"><span id="navIconPrivacy"></span> Privacy</a>
+          <a href="#security"><span id="navIconSecurity"></span> Security</a>
+          <a href="#accounts"><span id="navIconAccounts"></span> Accounts</a>
+          <a href="#data"><span id="navIconData"></span> Data</a>
+        </nav>
+
+        <div>
+          <section class="settings-section" id="appearance">
+            <div class="card">
+              <div class="settings-section-head"><h3>Appearance</h3><p>Choose how Magadige Task looks — it can also follow the time of day automatically.</p></div>
+              <div class="theme-preview-row">
+                <div class="theme-preview-card" data-theme-set="day">
+                  <div class="theme-preview-swatch day"></div>
+                  <div class="theme-preview-label">☀️ Day</div>
+                </div>
+                <div class="theme-preview-card" data-theme-set="auto">
+                  <div class="theme-preview-swatch auto"></div>
+                  <div class="theme-preview-label">🌓 Auto</div>
+                </div>
+                <div class="theme-preview-card" data-theme-set="night">
+                  <div class="theme-preview-swatch night"></div>
+                  <div class="theme-preview-label">🌙 Night</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-section" id="notifications">
+            <div class="card">
+              <div class="settings-section-head"><h3>Notifications</h3><p>Control what Magadige Task nudges you about.</p></div>
+              <div class="settings-row">
+                <div><div class="settings-row-label">Task due reminders</div><div class="settings-row-desc">Get notified shortly before a task is due</div></div>
+                <label class="switch"><input type="checkbox" checked /><span class="switch-track"><span class="switch-thumb"></span></span></label>
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-row-label">Daily summary email</div><div class="settings-row-desc">A recap of what you completed each evening</div></div>
+                <label class="switch"><input type="checkbox" checked /><span class="switch-track"><span class="switch-thumb"></span></span></label>
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-row-label">Streak &amp; achievement alerts</div><div class="settings-row-desc">Celebrate milestones as they happen</div></div>
+                <label class="switch"><input type="checkbox" checked /><span class="switch-track"><span class="switch-thumb"></span></span></label>
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-row-label">Dream progress nudges</div><div class="settings-row-desc">Gentle reminders tied to your life goals</div></div>
+                <label class="switch"><input type="checkbox" /><span class="switch-track"><span class="switch-thumb"></span></span></label>
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-row-label">Marketing emails</div><div class="settings-row-desc">Product news and tips — sent rarely</div></div>
+                <label class="switch"><input type="checkbox" /><span class="switch-track"><span class="switch-thumb"></span></span></label>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-section" id="language">
+            <div class="card">
+              <div class="settings-section-head"><h3>Language &amp; Region</h3><p>Set your preferred language and date format.</p></div>
+              <div class="field select-inline">
+                <label class="field-label">App language</label>
+                <select class="select">
+                  <option>English (United States)</option>
+                  <option>English (United Kingdom)</option>
+                  <option>French</option>
+                  <option>Spanish</option>
+                  <option>Portuguese</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-section" id="privacy">
+            <div class="card">
+              <div class="settings-section-head"><h3>Privacy</h3><p>Manage what's visible and how your data is used.</p></div>
+              <div class="settings-row">
+                <div><div class="settings-row-label">Public productivity profile</div><div class="settings-row-desc">Let others see your streak &amp; badges</div></div>
+                <label class="switch"><input type="checkbox" /><span class="switch-track"><span class="switch-thumb"></span></span></label>
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-row-label">Usage analytics</div><div class="settings-row-desc">Help us improve by sharing anonymous usage data</div></div>
+                <label class="switch"><input type="checkbox" checked /><span class="switch-track"><span class="switch-thumb"></span></span></label>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-section" id="security">
+            <div class="card">
+              <div class="settings-section-head"><h3>Security</h3><p>Protect your account.</p></div>
+              <div class="settings-row">
+                <div><div class="settings-row-label">Password</div><div class="settings-row-desc">Last changed 3 months ago</div></div>
+                <button class="btn btn-secondary btn-sm">Change password</button>
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-row-label">Two-factor authentication</div><div class="settings-row-desc">Add an extra layer of protection at login</div></div>
+                <label class="switch"><input type="checkbox" /><span class="switch-track"><span class="switch-thumb"></span></span></label>
+              </div>
+              <div class="settings-row">
+                <div><div class="settings-row-label">Active sessions</div><div class="settings-row-desc">1 device currently signed in</div></div>
+                <button class="btn btn-ghost btn-sm">Manage</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-section" id="accounts">
+            <div class="card">
+              <div class="settings-section-head"><h3>Connected Accounts</h3><p>Sign in faster by linking external accounts.</p></div>
+              <div class="connected-account">
+                <div class="connected-account-icon"><span id="googleIcon"></span></div>
+                <div style="flex:1;"><strong style="font-size:var(--fs-xs);">Google</strong><div class="settings-row-desc">nbcodezone@gmail.com</div></div>
+                <span class="badge badge-mint">Connected</span>
+              </div>
+              <div class="connected-account">
+                <div class="connected-account-icon"><span id="githubIcon"></span></div>
+                <div style="flex:1;"><strong style="font-size:var(--fs-xs);">GitHub</strong><div class="settings-row-desc">Not connected</div></div>
+                <button class="btn btn-secondary btn-sm">Connect</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-section" id="data">
+            <div class="card" style="margin-bottom:var(--sp-5);">
+              <div class="settings-section-head"><h3>Export Data</h3><p>Download a copy of all your tasks, dreams, and activity.</p></div>
+              <button class="btn btn-secondary" id="exportBtn"><span id="downloadIcon"></span> Export as JSON</button>
+            </div>
+            <div class="card danger-zone">
+              <div class="settings-section-head"><h4 style="font-size:var(--fs-md);">Delete Account</h4><p>This permanently deletes your account, tasks, and dreams. This can't be undone.</p></div>
+              <button class="btn btn-danger" id="deleteAccountBtn">Delete my account</button>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="js/icons.js"></script>
+<script src="js/data.js"></script>
+<script src="js/quotes.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/settings.js"></script>
+</body>
+</html>

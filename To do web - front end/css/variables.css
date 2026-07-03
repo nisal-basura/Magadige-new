@@ -1,0 +1,210 @@
+/* ==========================================================================
+   MAGADIGE TASK — Design Tokens
+   Core variables shared across the entire product. Themes (day/night) swap
+   the semantic tokens only — component CSS never hardcodes raw colors.
+   ========================================================================== */
+
+:root {
+  /* ---- Brand ramp -------------------------------------------------- */
+  --indigo-50:  #f2f0ff;
+  --indigo-100: #e5e1ff;
+  --indigo-200: #c9c0ff;
+  --indigo-300: #a596ff;
+  --indigo-400: #8570ff;
+  --indigo-500: #6c4eff;
+  --indigo-600: #5936e8;
+  --indigo-700: #4527c2;
+  --indigo-800: #341d94;
+  --indigo-900: #241468;
+
+  --sky-50:  #eef8ff;
+  --sky-100: #dcf0ff;
+  --sky-200: #b3e2ff;
+  --sky-300: #7dcdff;
+  --sky-400: #45b3ff;
+  --sky-500: #1f97f2;
+  --sky-600: #1078cc;
+  --sky-700: #0d5fa3;
+  --sky-800: #0e4d81;
+  --sky-900: #0f3f68;
+
+  --amber-50:  #fff8e8;
+  --amber-100: #ffedc2;
+  --amber-200: #ffdb8a;
+  --amber-300: #ffc352;
+  --amber-400: #ffab29;
+  --amber-500: #fa8f0f;
+  --amber-600: #dd6c08;
+  --amber-700: #b74e0a;
+  --amber-800: #93390f;
+  --amber-900: #782f10;
+
+  --coral-500: #ff6b6b;
+  --coral-600: #ee4f4f;
+  --mint-500:  #22c58b;
+  --mint-600:  #16a374;
+
+  --gray-0:   #ffffff;
+  --gray-25:  #fbfbfe;
+  --gray-50:  #f5f5fb;
+  --gray-100: #eeeef7;
+  --gray-150: #e6e6f2;
+  --gray-200: #dcdce8;
+  --gray-300: #c3c3d6;
+  --gray-400: #9d9db5;
+  --gray-500: #7a7a95;
+  --gray-600: #5d5d76;
+  --gray-700: #46465c;
+  --gray-800: #2e2e40;
+  --gray-900: #1c1c29;
+  --gray-950: #101018;
+
+  /* ---- Typography ---------------------------------------------------- */
+  --font-display: "Space Grotesk", "Sora", ui-sans-serif, sans-serif;
+  --font-sans: "Sora", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --fs-2xs: 0.6875rem;
+  --fs-xs:  0.75rem;
+  --fs-sm:  0.8125rem;
+  --fs-base: 0.9375rem;
+  --fs-md:  1.0625rem;
+  --fs-lg:  1.25rem;
+  --fs-xl:  1.5rem;
+  --fs-2xl: 1.875rem;
+  --fs-3xl: 2.375rem;
+  --fs-4xl: 3rem;
+  --fs-5xl: 3.75rem;
+
+  --lh-tight: 1.15;
+  --lh-snug: 1.35;
+  --lh-normal: 1.6;
+
+  /* ---- Spacing (4px scale) ------------------------------------------- */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.25rem;
+  --sp-6: 1.5rem;
+  --sp-8: 2rem;
+  --sp-10: 2.5rem;
+  --sp-12: 3rem;
+  --sp-16: 4rem;
+  --sp-20: 5rem;
+  --sp-24: 6rem;
+
+  /* ---- Radius ---------------------------------------------------------- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --r-2xl: 28px;
+  --r-full: 999px;
+
+  /* ---- Motion ---------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 140ms;
+  --dur-base: 220ms;
+  --dur-slow: 420ms;
+  --dur-slower: 650ms;
+
+  /* ---- Elevation (day defaults, overridden per-theme below) ---------- */
+  --shadow-color: 235 45% 15%;
+  --shadow-xs: 0 1px 2px hsl(var(--shadow-color) / 0.06);
+  --shadow-sm: 0 2px 8px hsl(var(--shadow-color) / 0.06), 0 1px 2px hsl(var(--shadow-color) / 0.04);
+  --shadow-md: 0 8px 24px hsl(var(--shadow-color) / 0.08), 0 2px 6px hsl(var(--shadow-color) / 0.05);
+  --shadow-lg: 0 20px 48px hsl(var(--shadow-color) / 0.12), 0 6px 16px hsl(var(--shadow-color) / 0.06);
+  --shadow-glow: 0 0 0 1px hsl(var(--shadow-color) / 0.04), 0 12px 32px -8px hsl(258 90% 60% / 0.35);
+
+  --container-max: 1280px;
+  --z-nav: 100;
+  --z-drawer: 300;
+  --z-modal: 300;
+  --z-toast: 400;
+  --z-ai: 250;
+}
+
+/* ==========================================================================
+   ☀️ DAY THEME (default) — bright, airy, optimistic
+   ========================================================================== */
+:root,
+[data-theme="day"] {
+  --bg-app: linear-gradient(180deg, #f7f6ff 0%, #f4f6fb 40%, #f6f4fb 100%);
+  --bg-canvas: #f5f5fb;
+  --bg-surface: #ffffff;
+  --bg-surface-2: #fbfbff;
+  --bg-sunken: #f0f0f9;
+  --bg-glass: rgba(255, 255, 255, 0.72);
+  --bg-glass-border: rgba(255, 255, 255, 0.5);
+  --bg-overlay: rgba(28, 28, 41, 0.42);
+
+  --text-primary: var(--gray-900);
+  --text-secondary: var(--gray-600);
+  --text-tertiary: var(--gray-400);
+  --text-inverse: #ffffff;
+  --text-on-brand: #ffffff;
+
+  --border-subtle: var(--gray-150);
+  --border-default: var(--gray-200);
+  --border-strong: var(--gray-300);
+
+  --brand: var(--indigo-500);
+  --brand-strong: var(--indigo-600);
+  --brand-soft: var(--indigo-50);
+  --accent: var(--amber-500);
+  --accent-soft: var(--amber-50);
+  --secondary: var(--sky-500);
+  --secondary-soft: var(--sky-50);
+
+  --hero-gradient: linear-gradient(135deg, #6c4eff 0%, #8f6dff 45%, #45b3ff 100%);
+  --card-gradient: linear-gradient(160deg, #ffffff 0%, #f7f6ff 100%);
+  --sidebar-bg: rgba(255, 255, 255, 0.78);
+
+  --period-icon-filter: none;
+  color-scheme: light;
+}
+
+/* ==========================================================================
+   🌙 NIGHT THEME — calm, deep, focused
+   ========================================================================== */
+[data-theme="night"] {
+  --shadow-color: 250 60% 3%;
+  --bg-app: radial-gradient(1200px 800px at 15% -10%, #221a45 0%, transparent 60%),
+            radial-gradient(1000px 700px at 110% 10%, #12233f 0%, transparent 55%),
+            linear-gradient(180deg, #100f1c 0%, #0c0c15 100%);
+  --bg-canvas: #100f1c;
+  --bg-surface: #17162650;
+  --bg-surface: #191828;
+  --bg-surface-2: #1f1e30;
+  --bg-sunken: #14131f;
+  --bg-glass: rgba(25, 24, 40, 0.6);
+  --bg-glass-border: rgba(255, 255, 255, 0.08);
+  --bg-overlay: rgba(4, 4, 10, 0.6);
+
+  --text-primary: #f2f1fb;
+  --text-secondary: #a9a8c4;
+  --text-tertiary: #706f8d;
+  --text-inverse: #16151f;
+  --text-on-brand: #ffffff;
+
+  --border-subtle: #27263b;
+  --border-default: #302f47;
+  --border-strong: #423f61;
+
+  --brand: var(--indigo-400);
+  --brand-strong: var(--indigo-300);
+  --brand-soft: #241f42;
+  --accent: var(--amber-400);
+  --accent-soft: #382a12;
+  --secondary: var(--sky-400);
+  --secondary-soft: #16283f;
+
+  --hero-gradient: linear-gradient(135deg, #4527c2 0%, #6c4eff 45%, #1078cc 100%);
+  --card-gradient: linear-gradient(160deg, #1c1b2e 0%, #15141f 100%);
+  --sidebar-bg: rgba(20, 19, 32, 0.75);
+
+  color-scheme: dark;
+}

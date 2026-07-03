@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Inbox — Magadige Task</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    var ov = localStorage.getItem("magadige_theme_override");
+    var h = new Date().getHours();
+    var period = ov === "day" ? "afternoon" : ov === "night" ? "night" : (h >= 5 && h < 12 ? "morning" : h >= 12 && h < 17 ? "afternoon" : h >= 17 && h < 21 ? "evening" : "night");
+    document.documentElement.setAttribute("data-theme", period === "night" ? "night" : "day");
+    document.documentElement.setAttribute("data-period", period);
+  })();
+</script>
+<link rel="stylesheet" href="css/variables.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/animations.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/layout.css" />
+<link rel="stylesheet" href="css/pages/inbox.css" />
+</head>
+<body>
+
+<div class="app-shell" id="appShell">
+  <div class="shell-content">
+    <div id="topbarSlot"></div>
+
+    <main class="main-content page-enter" id="mainContent">
+
+      <div class="inbox-toolbar">
+        <div class="tabs" id="inboxTabs">
+          <button class="tab is-active" data-filter="all">All</button>
+          <button class="tab" data-filter="unread">Unread</button>
+          <button class="tab" data-filter="reminder">Reminders</button>
+          <button class="tab" data-filter="achievement">Achievements</button>
+          <button class="tab" data-filter="dream">Dreams</button>
+          <button class="tab" data-filter="system">System</button>
+        </div>
+        <button class="btn btn-secondary btn-sm" id="markAllReadBtn"><span id="checkIcon"></span> Mark all read</button>
+      </div>
+
+      <div class="card card-flush">
+        <div class="inbox-list" id="inboxList" style="padding: var(--sp-2) var(--sp-4) var(--sp-4);"></div>
+        <div class="empty-state" id="inboxEmptyState" hidden>
+          <img src="assets/illustrations/empty-notifications.svg" class="empty-state-illustration" alt="" />
+          <h4>You're all caught up</h4>
+          <p>No notifications here. We'll let you know when something needs your attention.</p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="js/icons.js"></script>
+<script src="js/data.js"></script>
+<script src="js/quotes.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/inbox.js"></script>
+</body>
+</html>

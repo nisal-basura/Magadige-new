@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Log in — Magadige Task</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    var ov = localStorage.getItem("magadige_theme_override");
+    var h = new Date().getHours();
+    var period = ov === "day" ? "afternoon" : ov === "night" ? "night" : (h >= 5 && h < 12 ? "morning" : h >= 12 && h < 17 ? "afternoon" : h >= 17 && h < 21 ? "evening" : "night");
+    document.documentElement.setAttribute("data-theme", period === "night" ? "night" : "day");
+    document.documentElement.setAttribute("data-period", period);
+  })();
+</script>
+<link rel="stylesheet" href="css/variables.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/animations.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/pages/auth.css" />
+</head>
+<body>
+
+<div class="theme-toggle auth-theme-toggle" data-theme-toggle>
+  <button data-theme-set="day" data-tooltip="Day" data-tooltip-pos="bottom"><span id="toggleSunIcon"></span></button>
+  <button data-theme-set="auto" data-tooltip="Auto" data-tooltip-pos="bottom"><span id="toggleAutoIcon"></span></button>
+  <button data-theme-set="night" data-tooltip="Night" data-tooltip-pos="bottom"><span id="toggleMoonIcon"></span></button>
+</div>
+
+<div class="auth-shell">
+  <section class="auth-visual has-photo auth-visual--login">
+    <div class="auth-visual-bg auth-visual-bg-day"></div>
+    <div class="auth-visual-bg auth-visual-bg-night"></div>
+    <a href="index.html" class="flex items-center gap-2" style="color:#fff;">
+      <div class="brand-mark" style="background:rgba(255,255,255,.16);box-shadow:none;">M</div>
+      <span class="brand-name" style="color:#fff;">Magadige Task</span>
+    </a>
+    <div class="auth-visual-illustration"></div>
+    <div class="auth-visual-quote">
+      <p>It always seems impossible until it's done.</p>
+      <span>— Nelson Mandela</span>
+    </div>
+  </section>
+
+  <section class="auth-panel">
+    <div class="auth-panel-inner anim-fade-up">
+      <a href="index.html" class="auth-back">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6 9 12l6 6"/></svg>
+        Back to home
+      </a>
+      <h1>Welcome back</h1>
+      <p class="lead">Log in to continue building toward your dreams.</p>
+
+      <form class="auth-form" data-auth-form data-redirect="dashboard.html">
+        <div class="field">
+          <label class="field-label" for="loginEmail">Email address</label>
+          <div class="input-group">
+            <span class="input-group-icon" id="mailIcon"></span>
+            <input class="input" type="email" id="loginEmail" placeholder="you@example.com" required />
+          </div>
+          <span class="field-error" data-error-for="loginEmail"></span>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="loginPassword">Password</label>
+          <div class="input-group">
+            <span class="input-group-icon" id="lockIcon"></span>
+            <input class="input" type="password" id="loginPassword" placeholder="••••••••" required />
+            <span class="input-group-trailing"><button type="button" class="icon-btn password-toggle" style="width:32px;height:32px;border:none;" data-toggle-password="loginPassword"></button></span>
+          </div>
+          <span class="field-error" data-error-for="loginPassword"></span>
+        </div>
+
+        <div class="auth-row-between">
+          <label class="checkbox-row"><input type="checkbox" class="checkbox" checked /> Remember me</label>
+          <a href="forgot-password.html">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Log in</button>
+      </form>
+
+      <div class="divider-label" style="margin:var(--sp-6) 0;">or continue with</div>
+
+      <div class="social-row">
+        <button class="btn btn-secondary" id="googleBtn"><span id="googleIcon"></span> Google</button>
+        <button class="btn btn-secondary" id="githubBtn"><span id="githubIcon"></span> GitHub</button>
+      </div>
+
+      <p class="auth-footnote">Don't have an account? <a href="register.html">Create one free</a></p>
+    </div>
+  </section>
+</div>
+
+<script src="js/icons.js"></script>
+<script src="js/theme.js"></script>
+<script>
+  document.getElementById("mailIcon").innerHTML = ICON.mail;
+  document.getElementById("lockIcon").innerHTML = ICON.lock;
+  document.getElementById("googleIcon").innerHTML = ICON.google;
+  document.getElementById("githubIcon").innerHTML = ICON.github;
+  document.getElementById("googleBtn").addEventListener("click", () => location.href = "dashboard.html");
+  document.getElementById("githubBtn").addEventListener("click", () => location.href = "dashboard.html");
+  document.getElementById("toggleSunIcon").innerHTML = ICON.sun;
+  document.getElementById("toggleAutoIcon").innerHTML = ICON.auto;
+  document.getElementById("toggleMoonIcon").innerHTML = ICON.moon;
+</script>
+<script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Calendar — Magadige Task</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    var ov = localStorage.getItem("magadige_theme_override");
+    var h = new Date().getHours();
+    var period = ov === "day" ? "afternoon" : ov === "night" ? "night" : (h >= 5 && h < 12 ? "morning" : h >= 12 && h < 17 ? "afternoon" : h >= 17 && h < 21 ? "evening" : "night");
+    document.documentElement.setAttribute("data-theme", period === "night" ? "night" : "day");
+    document.documentElement.setAttribute("data-period", period);
+  })();
+</script>
+<link rel="stylesheet" href="css/variables.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/animations.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/layout.css" />
+<link rel="stylesheet" href="css/pages/calendar.css" />
+</head>
+<body>
+
+<div class="app-shell" id="appShell">
+  <div class="shell-content">
+    <div id="topbarSlot"></div>
+
+    <main class="main-content page-enter" id="mainContent">
+
+      <div class="cal-toolbar">
+        <div class="cal-nav">
+          <button class="cal-nav-btn" id="calPrevBtn"><span id="calPrevIcon"></span></button>
+          <h2 id="calMonthLabel">—</h2>
+          <button class="cal-nav-btn" id="calNextBtn"><span id="calNextIcon"></span></button>
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="btn btn-secondary" id="calTodayBtn">Today</button>
+          <button class="btn btn-primary" id="calNewTaskBtn"><span id="calPlusIcon"></span> New Task</button>
+        </div>
+      </div>
+
+      <div class="cal-layout">
+        <div class="card cal-grid-card">
+          <div class="cal-weekdays">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <div class="cal-days" id="calDays"></div>
+        </div>
+
+        <div class="card cal-side-card">
+          <h3 class="cal-side-date" id="calSideDate">—</h3>
+          <p class="cal-side-sub" id="calSideSub">—</p>
+          <div id="calSideTasks"></div>
+          <div class="cal-quick-add">
+            <input class="input" type="text" id="calQuickAddInput" placeholder="Add a task for this day…" />
+            <button class="btn btn-primary btn-icon" id="calQuickAddBtn"><span id="calQuickPlusIcon"></span></button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="js/icons.js"></script>
+<script src="js/data.js"></script>
+<script src="js/quotes.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/calendar.js"></script>
+</body>
+</html>

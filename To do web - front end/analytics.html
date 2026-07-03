@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Analytics — Magadige Task</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    var ov = localStorage.getItem("magadige_theme_override");
+    var h = new Date().getHours();
+    var period = ov === "day" ? "afternoon" : ov === "night" ? "night" : (h >= 5 && h < 12 ? "morning" : h >= 12 && h < 17 ? "afternoon" : h >= 17 && h < 21 ? "evening" : "night");
+    document.documentElement.setAttribute("data-theme", period === "night" ? "night" : "day");
+    document.documentElement.setAttribute("data-period", period);
+  })();
+</script>
+<link rel="stylesheet" href="css/variables.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/animations.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/layout.css" />
+<link rel="stylesheet" href="css/pages/dashboard.css" />
+<link rel="stylesheet" href="css/pages/analytics.css" />
+</head>
+<body>
+
+<div class="app-shell" id="appShell">
+  <div class="shell-content">
+    <div id="topbarSlot"></div>
+
+    <main class="main-content page-enter" id="mainContent">
+
+      <div class="tabs range-tabs" id="rangeTabs">
+        <button class="tab is-active" data-range="week">This Week</button>
+        <button class="tab" data-range="month">This Month</button>
+        <button class="tab" data-range="year">This Year</button>
+      </div>
+
+      <div class="bento" id="analyticsStats"></div>
+
+      <div class="bento" style="margin-top:var(--sp-5);">
+        <div class="card g-8 anim-fade-up">
+          <div class="section-head"><div><h3>Completion Trend</h3><p>Tasks completed vs. planned over time</p></div></div>
+          <div id="trendChart"></div>
+        </div>
+
+        <div class="card g-4 anim-fade-up">
+          <div class="section-head"><div><h3>By Priority</h3><p>Active task breakdown</p></div></div>
+          <div class="donut-wrap">
+            <div id="priorityDonut"></div>
+            <div class="legend-list" id="priorityLegend"></div>
+          </div>
+        </div>
+
+        <div class="card g-4 anim-fade-up">
+          <div class="section-head"><div><h3>By Category</h3><p>Where your effort goes</p></div></div>
+          <div class="donut-wrap">
+            <div id="categoryDonut"></div>
+            <div class="legend-list" id="categoryLegend"></div>
+          </div>
+        </div>
+
+        <div class="card g-8 anim-fade-up">
+          <div class="section-head"><div><h3>Weekly Rhythm</h3><p>Which days you get the most done</p></div></div>
+          <div id="rhythmChart"></div>
+        </div>
+
+        <div class="card g-7 anim-fade-up">
+          <div class="section-head"><div><h3>Consistency Heatmap</h3><p>Your last 12 weeks of activity</p></div></div>
+          <div class="history-strip" id="analyticsHeatmap"></div>
+          <div class="heatmap-legend">
+            <span>Less</span>
+            <span class="history-cell"></span>
+            <span class="history-cell level-1"></span>
+            <span class="history-cell level-2"></span>
+            <span class="history-cell level-3"></span>
+            <span>More</span>
+          </div>
+        </div>
+
+        <div class="card g-5 anim-fade-up">
+          <div class="section-head"><div><h3>Insights</h3><p>What the data is telling you</p></div></div>
+          <div id="insightsList"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="js/icons.js"></script>
+<script src="js/data.js"></script>
+<script src="js/quotes.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/analytics.js"></script>
+</body>
+</html>

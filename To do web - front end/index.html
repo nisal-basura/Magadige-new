@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Magadige Task — Turn today's work into tomorrow's dream</title>
+<meta name="description" content="A premium, AI-inspired productivity platform. Plan tasks, track dreams, and stay motivated with a beautifully designed day/night workspace." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    var ov = localStorage.getItem("magadige_theme_override");
+    var h = new Date().getHours();
+    var period = ov === "day" ? "afternoon" : ov === "night" ? "night" : (h >= 5 && h < 12 ? "morning" : h >= 12 && h < 17 ? "afternoon" : h >= 17 && h < 21 ? "evening" : "night");
+    document.documentElement.setAttribute("data-theme", period === "night" ? "night" : "day");
+    document.documentElement.setAttribute("data-period", period);
+  })();
+</script>
+<link rel="stylesheet" href="css/variables.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/animations.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/pages/landing.css" />
+</head>
+<body>
+
+<!-- ============================= NAVBAR ============================= -->
+<nav class="nav">
+  <div class="brand">
+    <div class="brand-mark">M</div>
+    <div class="brand-name">Magadige <span>Task</span></div>
+  </div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#showcase">Product</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="nav-cta">
+    <a href="login.html" class="btn btn-ghost btn-sm">Log in</a>
+    <a href="register.html" class="btn btn-primary btn-sm">Get started free</a>
+  </div>
+  <button class="icon-btn nav-burger" id="navBurger" aria-label="Menu"></button>
+</nav>
+
+<!-- ============================= HERO ============================= -->
+<header class="hero">
+  <div class="hero-bg-orb a"></div>
+  <div class="hero-bg-orb b"></div>
+  <div class="hero-bg-orb c"></div>
+
+  <div class="hero-badge anim-fade-up">✨ Now with an AI Assistant &amp; Dream Board</div>
+  <h1 class="anim-fade-up" style="animation-delay:.05s">Plan your day. <span class="grad">Build your dream.</span></h1>
+  <p class="lead anim-fade-up" style="animation-delay:.1s">Magadige Task is the calm, beautiful productivity workspace that connects your daily tasks to your life's biggest goals — with a mood that shifts from sunrise to midnight, right along with you.</p>
+  <div class="hero-cta anim-fade-up" style="animation-delay:.15s">
+    <a href="register.html" class="btn btn-primary btn-lg">Start for free</a>
+    <a href="#showcase" class="btn btn-secondary btn-lg">See how it works</a>
+  </div>
+  <p class="hero-meta anim-fade-up" style="animation-delay:.2s">No credit card required · Free forever plan · Loved by 12,000+ focused people</p>
+
+  <div class="hero-mock anim-scale-in" style="animation-delay:.25s">
+    <div class="hero-mock-bar"><span></span><span></span><span></span></div>
+    <div class="hero-mock-body">
+      <div class="mock-side">
+        <div class="mock-side-item active"></div>
+        <div class="mock-side-item"></div>
+        <div class="mock-side-item"></div>
+        <div class="mock-side-item"></div>
+      </div>
+      <div class="mock-main">
+        <div class="mock-card"><div class="mock-line w60"></div><div class="mock-line w40"></div></div>
+        <div class="mock-card"><div class="mock-line w60"></div><div class="mock-line w40"></div></div>
+        <div class="mock-card"><div class="mock-line w60"></div><div class="mock-line w40"></div></div>
+        <div class="mock-card"><div class="mock-line w40"></div><div class="mock-line w60"></div></div>
+        <div class="mock-card"><div class="mock-line w60"></div><div class="mock-line w40"></div></div>
+        <div class="mock-card"><div class="mock-line w40"></div><div class="mock-line w60"></div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="trust-strip">
+  <p>Trusted by focused teams and individuals at</p>
+  <div class="trust-logos">
+    <span>Northwind</span><span>Verve</span><span>Solace</span><span>Ledger&amp;Co</span><span>Kite Labs</span>
+  </div>
+</section>
+
+<!-- ============================= FEATURES ============================= -->
+<section class="section" id="features">
+  <div class="section-intro">
+    <span class="eyebrow">Why Magadige Task</span>
+    <h2>Everything a focused life needs, nothing it doesn't</h2>
+    <p>Every feature is designed around a simple idea: small daily actions should feel connected to the bigger life you're building.</p>
+  </div>
+  <div class="feature-grid stagger">
+    <div class="card feature-card hover-lift">
+      <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3 6 1.5 1.5L7 5"/><path d="m3 12 1.5 1.5L7 11"/><path d="m3 18 1.5 1.5L7 17"/></svg></div>
+      <h4>Smart Task Management</h4>
+      <p>Grid, table, and Kanban views with filters, tags, priorities and swipe actions — built for how you actually work.</p>
+    </div>
+    <div class="card feature-card hover-lift">
+      <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 14.5 8l6 1-4.3 4.2 1 6-5.2-2.9-5.2 2.9 1-6L3.5 9l6-1Z"/></svg></div>
+      <h4>Dream Board</h4>
+      <p>Turn "someday" goals into tracked dreams with progress, target dates, and tasks that quietly move them forward.</p>
+    </div>
+    <div class="card feature-card hover-lift">
+      <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6Z"/><path d="M19 15.5 19.8 18l2.2.8-2.2.8L19 22l-.8-2.4-2.2-.8 2.2-.8Z"/></svg></div>
+      <h4>AI Assistant</h4>
+      <p>Break big tasks into subtasks, get priority suggestions, and tighten up descriptions in one click.</p>
+    </div>
+    <div class="card feature-card hover-lift">
+      <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg></div>
+      <h4>Day &amp; Night Modes</h4>
+      <p>A workspace that shifts mood with the sun — soft mornings, focused afternoons, calm, deep nights.</p>
+    </div>
+    <div class="card feature-card hover-lift">
+      <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M8 14.5a5 5 0 1 1 8 0c-.9 1-1.5 1.7-1.5 3H9.5c0-1.3-.6-2-1.5-3Z"/></svg></div>
+      <h4>Context-aware Motivation</h4>
+      <p>No random quotes — messages that respond to what you've actually completed, missed, or are about to start.</p>
+    </div>
+    <div class="card feature-card hover-lift">
+      <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="15" r="5.5"/><path d="m9 4 3 6 3-6M9 4H6l3.5 7M15 4h3l-3.5 7"/></svg></div>
+      <h4>Streaks &amp; Achievements</h4>
+      <p>Productivity scores, streaks, and badges that make consistency feel like progress worth celebrating.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= SHOWCASE ============================= -->
+<section class="section" id="showcase">
+  <div class="showcase" style="margin-bottom: var(--sp-20);">
+    <div class="showcase-copy anim-fade-up">
+      <span class="eyebrow">Dashboard</span>
+      <h3>A morning briefing that actually motivates you</h3>
+      <p>See your progress, your focus for the day, and a quote that matches your momentum — not a random one.</p>
+      <ul class="showcase-list">
+        <li><span class="tick">✓</span> Daily &amp; weekly progress at a glance</li>
+        <li><span class="tick">✓</span> Task statistics: completed, pending, overdue</li>
+        <li><span class="tick">✓</span> Productivity score with streaks and badges</li>
+      </ul>
+      <a href="register.html" class="btn btn-primary" style="margin-top:var(--sp-6);">Try the dashboard</a>
+    </div>
+    <div class="showcase-visual anim-scale-in">
+      <img src="assets/illustrations/shot-dashboard.svg" alt="Magadige Task dashboard preview" />
+    </div>
+  </div>
+
+  <div class="showcase reverse">
+    <div class="showcase-copy anim-fade-up">
+      <span class="eyebrow">Dream Board</span>
+      <h3>Connect daily tasks to your life goals</h3>
+      <p>"Become a Software Architect." "Travel Japan." "Build my startup." Track the goals that matter, and see how today's work builds them.</p>
+      <ul class="showcase-list">
+        <li><span class="tick">✓</span> Progress bars &amp; target dates for every dream</li>
+        <li><span class="tick">✓</span> Related tasks linked automatically</li>
+        <li><span class="tick">✓</span> A daily reminder that keeps you anchored</li>
+      </ul>
+      <a href="register.html" class="btn btn-primary" style="margin-top:var(--sp-6);">Explore Dream Board</a>
+    </div>
+    <div class="showcase-visual anim-scale-in">
+      <img src="assets/illustrations/shot-dreams.svg" alt="Dream Board preview" />
+    </div>
+  </div>
+</section>
+
+<!-- ============================= PRICING ============================= -->
+<section class="section" id="pricing">
+  <div class="section-intro">
+    <span class="eyebrow">Pricing</span>
+    <h2>Simple plans that grow with you</h2>
+    <p>Start free. Upgrade when the AI Assistant and advanced views earn their keep.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="card price-card">
+      <h4>Starter</h4>
+      <p style="font-size:var(--fs-xs);">For getting your days in order.</p>
+      <div class="price-amount">$0 <span>/ forever</span></div>
+      <ul class="price-features">
+        <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mint-500);flex-shrink:0;"><path d="m5 12.5 4.5 4.5L19 7"/></svg> Unlimited tasks</li>
+        <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mint-500);flex-shrink:0;"><path d="m5 12.5 4.5 4.5L19 7"/></svg> Grid &amp; table views</li>
+        <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mint-500);flex-shrink:0;"><path d="m5 12.5 4.5 4.5L19 7"/></svg> 2 dreams on your Dream Board</li>
+        <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mint-500);flex-shrink:0;"><path d="m5 12.5 4.5 4.5L19 7"/></svg> Day / Night themes</li>
+      </ul>
+      <a href="register.html" class="btn btn-secondary btn-block">Get started</a>
+    </div>
+    <div class="card price-card featured">
+      <div class="price-badge">Most popular</div>
+      <h4>Pro</h4>
+      <p style="font-size:var(--fs-xs);">For people building something real.</p>
+      <div class="price-amount">$8 <span>/ month</span></div>
+      <ul class="price-features">
+        <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mint-500);flex-shrink:0;"><path d="m5 12.5 4.5 4.5L19 7"/></svg> Everything in Starter</li>
+        <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mint-500);flex-shrink:0;"><path d="m5 12.5 4.5 4.5L19 7"/></svg> Kanban view &amp; bulk actions</li>
+        <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mint-500);flex-shrink:0;"><path d="m5 12.5 4.5 4.5L19 7"/></svg> Unlimited dreams + AI Assistant</li>
+        <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mint-500);flex-shrink:0;"><path d="m5 12.5 4.5 4.5L19 7"/></svg> Productivity streaks &amp; badges</li>
+      </ul>
+      <a href="register.html" class="btn btn-primary btn-block">Start free trial</a>
+    </div>
+    <div class="card price-card">
+      <h4>Team</h4>
+      <p style="font-size:var(--fs-xs);">For small teams who plan together.</p>
+      <div class="price-amount">$18 <span>/ user·mo</span></div>
+      <ul class="price-features">
+        <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mint-500);flex-shrink:0;"><path d="m5 12.5 4.5 4.5L19 7"/></svg> Everything in Pro</li>
+        <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mint-500);flex-shrink:0;"><path d="m5 12.5 4.5 4.5L19 7"/></svg> Shared task boards</li>
+        <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mint-500);flex-shrink:0;"><path d="m5 12.5 4.5 4.5L19 7"/></svg> Team activity feed</li>
+        <li><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mint-500);flex-shrink:0;"><path d="m5 12.5 4.5 4.5L19 7"/></svg> Priority support</li>
+      </ul>
+      <a href="register.html" class="btn btn-secondary btn-block">Talk to us</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= CTA ============================= -->
+<section class="section" id="faq">
+  <div class="cta-banner">
+    <h2>Today's work builds tomorrow's dream.</h2>
+    <p>Join thousands who've turned scattered to-do lists into a calm, connected system for their whole life.</p>
+    <a href="register.html" class="btn btn-accent btn-lg">Create your free account</a>
+  </div>
+</section>
+
+<!-- ============================= FOOTER ============================= -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="brand">
+        <div class="brand-mark">M</div>
+        <div class="brand-name">Magadige <span>Task</span></div>
+      </div>
+      <p>A premium productivity workspace that connects daily tasks to lifelong dreams.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Product</h5>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="dreams.html">Dream Board</a>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <a href="#">About</a>
+      <a href="#">Careers</a>
+      <a href="#">Blog</a>
+      <a href="#">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h5>Legal</h5>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Security</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Magadige Task. All rights reserved.</span>
+    <div class="footer-social">
+      <a href="#" aria-label="Twitter">𝕏</a>
+      <a href="#" aria-label="GitHub"></a>
+      <a href="#" aria-label="LinkedIn">in</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/icons.js"></script>
+<script src="js/landing.js"></script>
+</body>
+</html>

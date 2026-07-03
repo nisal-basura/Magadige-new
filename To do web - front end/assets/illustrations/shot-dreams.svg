@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 440" width="100%" height="100%">
+  <defs>
+    <linearGradient id="dbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eef8ff"/>
+      <stop offset="100%" stop-color="#f2f0ff"/>
+    </linearGradient>
+    <linearGradient id="d1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6c4eff"/><stop offset="100%" stop-color="#8f6dff"/></linearGradient>
+    <linearGradient id="d2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffab29"/><stop offset="100%" stop-color="#fa8f0f"/></linearGradient>
+    <linearGradient id="d3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#45b3ff"/><stop offset="100%" stop-color="#1f97f2"/></linearGradient>
+    <linearGradient id="d4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#22c58b"/><stop offset="100%" stop-color="#16a374"/></linearGradient>
+  </defs>
+  <rect width="640" height="440" rx="24" fill="url(#dbg)"/>
+
+  <g>
+    <rect x="32" y="40" width="272" height="150" rx="18" fill="#ffffff"/>
+    <circle cx="66" cy="76" r="18" fill="#e5e1ff"/>
+    <text x="66" y="82" text-anchor="middle" font-size="18">🏛️</text>
+    <rect x="96" y="66" width="150" height="12" rx="6" fill="#1c1c29"/>
+    <rect x="96" y="86" width="100" height="9" rx="4" fill="#9d9db5"/>
+    <rect x="52" y="130" width="228" height="8" rx="4" fill="#eeeef7"/>
+    <rect x="52" y="130" width="96" height="8" rx="4" fill="url(#d1)"/>
+    <rect x="52" y="150" width="60" height="9" rx="4" fill="#5d5d76"/>
+    <rect x="220" y="150" width="60" height="16" rx="8" fill="#e5e1ff"/>
+  </g>
+
+  <g>
+    <rect x="336" y="40" width="272" height="150" rx="18" fill="#ffffff"/>
+    <circle cx="370" cy="76" r="18" fill="#ffedc2"/>
+    <text x="370" y="82" text-anchor="middle" font-size="18">🚀</text>
+    <rect x="400" y="66" width="140" height="12" rx="6" fill="#1c1c29"/>
+    <rect x="400" y="86" width="110" height="9" rx="4" fill="#9d9db5"/>
+    <rect x="356" y="130" width="228" height="8" rx="4" fill="#eeeef7"/>
+    <rect x="356" y="130" width="62" height="8" rx="4" fill="url(#d2)"/>
+    <rect x="356" y="150" width="60" height="9" rx="4" fill="#5d5d76"/>
+    <rect x="524" y="150" width="60" height="16" rx="8" fill="#ffedc2"/>
+  </g>
+
+  <g>
+    <rect x="32" y="210" width="272" height="150" rx="18" fill="#ffffff"/>
+    <circle cx="66" cy="246" r="18" fill="#dcf0ff"/>
+    <text x="66" y="252" text-anchor="middle" font-size="18">🗾</text>
+    <rect x="96" y="236" width="150" height="12" rx="6" fill="#1c1c29"/>
+    <rect x="96" y="256" width="100" height="9" rx="4" fill="#9d9db5"/>
+    <rect x="52" y="300" width="228" height="8" rx="4" fill="#eeeef7"/>
+    <rect x="52" y="300" width="132" height="8" rx="4" fill="url(#d3)"/>
+    <rect x="52" y="320" width="60" height="9" rx="4" fill="#5d5d76"/>
+    <rect x="220" y="320" width="60" height="16" rx="8" fill="#dcf0ff"/>
+  </g>
+
+  <g>
+    <rect x="336" y="210" width="272" height="150" rx="18" fill="#ffffff"/>
+    <circle cx="370" cy="246" r="18" fill="#d7f5e9"/>
+    <text x="370" y="252" text-anchor="middle" font-size="18">🏡</text>
+    <rect x="400" y="236" width="140" height="12" rx="6" fill="#1c1c29"/>
+    <rect x="400" y="256" width="110" height="9" rx="4" fill="#9d9db5"/>
+    <rect x="356" y="300" width="228" height="8" rx="4" fill="#eeeef7"/>
+    <rect x="356" y="300" width="34" height="8" rx="4" fill="url(#d4)"/>
+    <rect x="356" y="320" width="60" height="9" rx="4" fill="#5d5d76"/>
+    <rect x="524" y="320" width="60" height="16" rx="8" fill="#d7f5e9"/>
+  </g>
+  <text x="320" y="404" text-anchor="middle" font-family="Arial" font-style="italic" font-size="13" fill="#5d5d76">"Today's work builds tomorrow's dream."</text>
+</svg>
