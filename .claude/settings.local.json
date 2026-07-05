@@ -8,7 +8,25 @@
       "Bash(cat /tmp/app_stdout.log 2>/dev/null | tail -60)",
       "Read(//tmp/**)",
       "Bash(taskkill //F //IM to_do_app.exe)",
-      "Bash(cp \"C:/Users/User/AppData/Local/Temp/claude/d--Magadige-new/7db06437-63b3-4acc-9179-34b743598211/scratchpad/responsive_check_test.dart\" test/responsive_check_test.dart)"
+      "Bash(cp \"C:/Users/User/AppData/Local/Temp/claude/d--Magadige-new/7db06437-63b3-4acc-9179-34b743598211/scratchpad/responsive_check_test.dart\" test/responsive_check_test.dart)",
+      "Bash(node -e ' *)",
+      "Bash(node --check js/admin.js)",
+      "Bash(node --check js/admin-data.js)",
+      "Bash(node --check js/seasonal.js)",
+      "Bash(node --check js/quotes.js)",
+      "Bash(ls /tmp/pwtest 2>/dev/null && echo \"playwright project exists\" || echo \"need setup\")",
+      "Bash(node verify-stats-fix.js)",
+      "Bash(cat /tmp/pwtest/verify-stats-fix.js 2>/dev/null | head -50)",
+      "Read(//tmp/pwtest/**)",
+      "Read(//d/tmp/pwtest/**)",
+      "Bash(node /tmp/pwtest/dream-task-test.js)",
+      "Bash(node \"/c/Users/User/AppData/Local/Temp/claude/d--Magadige-new/7db06437-63b3-4acc-9179-34b743598211/scratchpad/gen-erd.js\" \"/d/Magadige new/database/magadige-er-diagram.drawio\")",
+      "Bash(python3 -c ' *)",
+      "Bash(python -c ' *)"
+    ],
+    "additionalDirectories": [
+      "\\tmp\\pwtest",
+      "d:\\tmp\\pwtest"
     ]
   }
 }

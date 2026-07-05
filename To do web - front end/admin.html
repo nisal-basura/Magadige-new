@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Dashboard — Magadige Task</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  (function () {
+    var ov = localStorage.getItem("magadige_theme_override");
+    var h = new Date().getHours();
+    var period = ov === "day" ? "afternoon" : ov === "night" ? "night" : (h >= 5 && h < 12 ? "morning" : h >= 12 && h < 17 ? "afternoon" : h >= 17 && h < 21 ? "evening" : "night");
+    document.documentElement.setAttribute("data-theme", period === "night" ? "night" : "day");
+    document.documentElement.setAttribute("data-period", period);
+  })();
+</script>
+<link rel="stylesheet" href="css/variables.css" />
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/animations.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/pages/admin.css" />
+</head>
+<body>
+
+<div class="admin-shell">
+  <header class="admin-topbar">
+    <div class="flex items-center gap-3">
+      <div class="brand-mark">M</div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="brand-name">Magadige <span>Task</span></span>
+          <span class="admin-badge"><span id="shieldIcon"></span> ADMIN</span>
+        </div>
+        <p style="font-size:var(--fs-2xs);margin:2px 0 0;">Platform overview &amp; controls</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="theme-toggle" data-theme-toggle>
+        <button data-theme-set="day" data-tooltip="Day"><span id="sunIcon"></span></button>
+        <button data-theme-set="auto" data-tooltip="Auto"><span id="autoIcon"></span></button>
+        <button data-theme-set="night" data-tooltip="Night"><span id="moonIcon"></span></button>
+      </div>
+      <a href="dashboard.html" class="btn btn-secondary btn-sm"><span id="backIcon"></span> Back to app</a>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <div class="tabs admin-tabs" id="adminTabs">
+      <button class="tab is-active" data-panel="overview"><span id="tabOverviewIcon"></span> Overview</button>
+      <button class="tab" data-panel="quotes"><span id="tabQuotesIcon"></span> Quotes</button>
+      <button class="tab" data-panel="seasonal"><span id="tabSeasonalIcon"></span> Seasonal Effects</button>
+    </div>
+
+    <!-- ============================= OVERVIEW ============================= -->
+    <section class="admin-panel is-active" id="panel-overview">
+      <div class="admin-bento" id="statTilesRow"></div>
+
+      <div class="admin-bento" style="margin-top:var(--sp-5);">
+        <div class="card a-g-8 anim-fade-up">
+          <div class="section-head"><div><h3>Registration Growth</h3><p>Cumulative registered users over the last 12 months</p></div></div>
+          <div id="growthChart"></div>
+        </div>
+
+        <div class="card a-g-4 anim-fade-up">
+          <div class="section-head"><div><h3>Plan Split</h3><p>Current subscription mix</p></div></div>
+          <div class="flex items-center gap-4" style="margin-top:var(--sp-4);">
+            <div id="planDonut"></div>
+            <div id="planLegend" style="flex:1;"></div>
+          </div>
+        </div>
+
+        <div class="card a-g-6 anim-fade-up">
+          <div class="section-head"><div><h3>Signups This Week</h3><p>Daily new registrations</p></div></div>
+          <div id="weeklyChart"></div>
+        </div>
+
+        <div class="card a-g-6 anim-fade-up">
+          <div class="section-head"><div><h3>Recent Registrations</h3><p>Latest people to join the platform</p></div></div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead><tr><th>User</th><th>Plan</th><th>Joined</th></tr></thead>
+              <tbody id="recentUsersBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================= QUOTES ============================= -->
+    <section class="admin-panel" id="panel-quotes">
+      <div class="admin-bento">
+        <div class="card a-g-4 anim-fade-up">
+          <div class="section-head"><div><h3>Add Inspiration Quote</h3><p>Appears in the "Today's Inspiration" card</p></div></div>
+          <form class="quote-form" id="quoteForm">
+            <div class="field">
+              <label class="field-label" for="quoteText">Quote</label>
+              <textarea class="textarea" id="quoteText" placeholder="Write something inspiring…" required></textarea>
+            </div>
+            <div class="field">
+              <label class="field-label" for="quoteAuthor">Author</label>
+              <input class="input" type="text" id="quoteAuthor" placeholder="e.g. Maya Angelou" />
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <span id="addQuoteIcon"></span> Publish Quote
+            </button>
+          </form>
+        </div>
+
+        <div class="card a-g-8 anim-fade-up">
+          <div class="section-head">
+            <div><h3>Quote Library</h3><p id="quoteCount">— quotes total</p></div>
+          </div>
+          <div class="quote-list" id="quoteList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================= SEASONAL ============================= -->
+    <section class="admin-panel" id="panel-seasonal">
+      <div class="card anim-fade-up">
+        <div class="section-head">
+          <div><h3>Seasonal Site Effects</h3><p>Applies instantly, site-wide, for every visitor</p></div>
+        </div>
+        <div class="seasonal-grid">
+          <div class="seasonal-card" data-theme-choice="none">
+            <div class="seasonal-card-emoji">✨</div>
+            <h4>None</h4>
+            <p>Standard experience, no overlay effects.</p>
+          </div>
+          <div class="seasonal-card" data-theme-choice="christmas">
+            <div class="seasonal-card-emoji">❄️</div>
+            <h4>Christmas Snow</h4>
+            <p>A gentle, drifting snowfall across every page.</p>
+          </div>
+          <div class="seasonal-card" data-theme-choice="newyear">
+            <div class="seasonal-card-emoji">🎆</div>
+            <h4>New Year Fireworks</h4>
+            <p>Soft periodic fireworks bursts to celebrate the new year.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="js/icons.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/quotes.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/admin-data.js"></script>
+<script src="js/seasonal.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

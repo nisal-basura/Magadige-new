@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   MDG_SHELL.mount("Tasks", "Everything you need to do, organized your way.");
   bindIcons();
   populateCategorySelect();
+  populateDreamSelect();
   bindToolbar();
   bindModal();
   bindDrawerClose();
@@ -47,6 +48,11 @@ function makeIconEl(svg) { const s = document.createElement("span"); s.innerHTML
 
 function populateCategorySelect() {
   document.getElementById("ctCategory").innerHTML = MDG.CATEGORIES.map(c => `<option value="${c.id}">${c.label}</option>`).join("");
+}
+
+function populateDreamSelect() {
+  const options = MDG.dreams.map(d => `<option value="${d.id}">${d.emoji} ${d.title}</option>`).join("");
+  document.getElementById("ctDream").innerHTML = `<option value="">No dream — general task</option>${options}`;
 }
 
 function bindToolbar() {
@@ -451,6 +457,8 @@ function openTaskModal(id = null) {
     document.getElementById("ctCategory").value = task.category;
     document.getElementById("ctDeadline").value = task.due;
     document.getElementById("ctEstimate").value = task.estimate;
+    const linkedDream = MDG.dreams.find(d => d.relatedTaskIds.includes(task.id));
+    document.getElementById("ctDream").value = linkedDream ? linkedDream.id : "";
   } else {
     document.getElementById("taskModalTitle").textContent = "Create Task";
     document.getElementById("ctDeadline").value = new Date().toISOString().slice(0, 10);
@@ -475,15 +483,26 @@ function saveTaskFromModal() {
     due: document.getElementById("ctDeadline").value || new Date().toISOString().slice(0, 10),
     estimate: document.getElementById("ctEstimate").value || "—",
   };
+  const dreamId = document.getElementById("ctDream").value;
+  let taskId;
   if (TState.editingId) {
-    Object.assign(MDG.tasks.find(t => t.id === TState.editingId), data);
+    taskId = TState.editingId;
+    Object.assign(MDG.tasks.find(t => t.id === taskId), data);
     MDG_SHELL.toast("Task updated", "success");
   } else {
+    taskId = "t" + Date.now();
     MDG.tasks.unshift({
-      id: "t" + Date.now(), ...data, status: "pending", tags: [], progress: 0, favorite: false,
+      id: taskId, ...data, status: "pending", tags: [], progress: 0, favorite: false,
       createdAt: new Date().toISOString().slice(0, 10),
     });
     MDG_SHELL.toast("Task created", "success");
+  }
+  // Keep dream linkage exclusive: unlink from any previous dream first, then
+  // link to the newly selected one (if any).
+  MDG.dreams.forEach(d => { d.relatedTaskIds = d.relatedTaskIds.filter(id => id !== taskId); });
+  if (dreamId) {
+    const dream = MDG.dreams.find(d => d.id === dreamId);
+    if (dream) dream.relatedTaskIds.push(taskId);
   }
   MDG.saveState();
   closeTaskModal();

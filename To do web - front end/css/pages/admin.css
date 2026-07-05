@@ -1,0 +1,91 @@
+/* ==========================================================================
+   Admin Dashboard
+   ========================================================================== */
+
+.admin-shell { min-height: 100vh; }
+
+.admin-topbar {
+  position: sticky; top: 0; z-index: 90;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--sp-4) var(--sp-8);
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px) saturate(160%);
+  border-bottom: 1px solid var(--border-subtle);
+  gap: var(--sp-4); flex-wrap: wrap;
+}
+.admin-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--gray-900); color: #fff;
+  font-size: var(--fs-2xs); font-weight: 800; letter-spacing: 0.06em;
+  padding: 0.3rem 0.7rem; border-radius: var(--r-full);
+}
+[data-theme="night"] .admin-badge { background: var(--brand); }
+
+.admin-main { max-width: 1280px; margin-inline: auto; padding: var(--sp-8); }
+
+.admin-tabs { margin-bottom: var(--sp-6); }
+
+.admin-panel { display: none; }
+.admin-panel.is-active { display: block; }
+
+.admin-bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--sp-5); }
+.admin-bento > * { min-width: 0; }
+.a-g-3 { grid-column: span 3; }
+.a-g-4 { grid-column: span 4; }
+.a-g-6 { grid-column: span 6; }
+.a-g-8 { grid-column: span 8; }
+.a-g-12 { grid-column: span 12; }
+
+.admin-stat-tile { display: flex; flex-direction: column; gap: var(--sp-3); }
+.admin-stat-icon { width: 40px; height: 40px; border-radius: var(--r-md); display: grid; place-content: center; }
+.admin-stat-icon svg { width: 19px; height: 19px; }
+.admin-stat-value { font-family: var(--font-display); font-size: var(--fs-2xl); font-weight: 800; }
+.admin-stat-label { font-size: var(--fs-xs); color: var(--text-tertiary); font-weight: 600; }
+
+.admin-table { width: 100%; border-collapse: collapse; }
+.admin-table th {
+  text-align: left; font-size: var(--fs-2xs); text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-tertiary); font-weight: 700; padding: var(--sp-3) var(--sp-4); border-bottom: 1px solid var(--border-subtle);
+}
+.admin-table td { padding: var(--sp-3) var(--sp-4); border-bottom: 1px solid var(--border-subtle); font-size: var(--fs-xs); }
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table-wrap { overflow-x: auto; }
+
+.admin-user-cell { display: flex; align-items: center; gap: var(--sp-3); }
+
+/* ---- Quotes manager ---------------------------------------------------- */
+.quote-form { display: flex; flex-direction: column; gap: var(--sp-4); }
+.quote-list { display: flex; flex-direction: column; gap: var(--sp-3); margin-top: var(--sp-5); }
+.quote-item {
+  display: flex; align-items: flex-start; gap: var(--sp-3);
+  padding: var(--sp-4); border-radius: var(--r-lg); border: 1px solid var(--border-subtle); background: var(--bg-surface);
+}
+.quote-item-mark { font-family: var(--font-display); font-size: 1.8rem; color: var(--brand); opacity: 0.35; line-height: 1; }
+.quote-item-body { flex: 1; }
+.quote-item-text { font-size: var(--fs-sm); font-weight: 600; line-height: 1.5; }
+.quote-item-author { font-size: var(--fs-2xs); color: var(--text-tertiary); margin-top: 4px; font-weight: 700; }
+.quote-item-actions { display: flex; align-items: center; gap: 8px; }
+
+/* ---- Seasonal effects ----------------------------------------------------- */
+.seasonal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--sp-5); }
+.seasonal-card {
+  border-radius: var(--r-xl); border: 2px solid var(--border-default);
+  padding: var(--sp-6); text-align: center; cursor: pointer;
+  transition: all var(--dur-base) var(--ease-out);
+  display: flex; flex-direction: column; align-items: center; gap: var(--sp-3);
+}
+.seasonal-card:hover { border-color: var(--brand); transform: translateY(-3px); }
+.seasonal-card.is-active { border-color: var(--brand); background: var(--brand-soft); box-shadow: var(--shadow-glow); }
+.seasonal-card-emoji { font-size: 2.6rem; }
+.seasonal-card h4 { font-size: var(--fs-md); }
+.seasonal-card p { font-size: var(--fs-xs); }
+.seasonal-active-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--mint-500); color: #fff; font-size: var(--fs-2xs); font-weight: 800;
+  padding: 0.3rem 0.7rem; border-radius: var(--r-full); margin-top: 4px;
+}
+
+@media (max-width: 1080px) {
+  .a-g-3, .a-g-4, .a-g-6, .a-g-8 { grid-column: span 12; }
+  .admin-main { padding: var(--sp-5); }
+}

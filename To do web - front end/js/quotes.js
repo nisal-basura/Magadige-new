@@ -1,8 +1,14 @@
 /* ==========================================================================
    Context-aware motivation engine + curated quote library
+   Built-in quotes ship with the app; admins can add more from admin.html —
+   those are persisted to localStorage and merged into the same pool used
+   by the dashboard's "Today's Inspiration" card.
    ========================================================================== */
 
 const MDG_QUOTES = (() => {
+  const CUSTOM_KEY = "magadige_custom_quotes_v1";
+  const ALL_MOODS = ["morning", "afternoon", "evening", "night", "calm", "momentum", "struggle", "complete", "work", "learning", "dream", "overdue"];
+
   const library = [
     { text: "The best way to find yourself is to lose yourself in the service of others.", author: "Mahatma Gandhi", mood: ["morning", "calm"] },
     { text: "Any sufficiently advanced technology is indistinguishable from magic.", author: "Arthur C. Clarke", mood: ["work", "learning"] },
@@ -19,6 +25,25 @@ const MDG_QUOTES = (() => {
     { text: "Almost everything will work again if you unplug it for a few minutes, including you.", author: "Anne Lamott", mood: ["night", "calm"] },
   ];
 
+  function loadCustom() {
+    try {
+      const raw = localStorage.getItem(CUSTOM_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveCustom(list) {
+    localStorage.setItem(CUSTOM_KEY, JSON.stringify(list));
+  }
+
+  let custom = loadCustom();
+
+  function allQuotes() {
+    return [...library, ...custom];
+  }
+
   function timeOfDay(date = new Date()) {
     const h = date.getHours();
     if (h >= 5 && h < 12) return "morning";
@@ -28,8 +53,8 @@ const MDG_QUOTES = (() => {
   }
 
   function pickQuote(moodTag) {
-    const pool = library.filter(q => q.mood.includes(moodTag));
-    const list = pool.length ? pool : library;
+    const pool = allQuotes().filter(q => q.mood.includes(moodTag));
+    const list = pool.length ? pool : allQuotes();
     const dayIndex = new Date().getDate() + (moodTag ? moodTag.length : 0);
     return list[dayIndex % list.length];
   }
@@ -67,5 +92,25 @@ const MDG_QUOTES = (() => {
     return pickQuote(moodTag);
   }
 
-  return { timeOfDay, motivationMessage, inspirationForNow, pickQuote };
+  // ---- Admin-facing management API --------------------------------------
+  function getBuiltIn() { return library.map((q, i) => ({ ...q, id: `builtin-${i}`, custom: false })); }
+  function getCustom() { return custom.map((q, i) => ({ ...q, id: `custom-${i}`, custom: true })); }
+  function getManaged() { return [...getCustom(), ...getBuiltIn()]; }
+
+  function addQuote(text, author) {
+    const entry = { text: text.trim(), author: author.trim() || "Unknown", mood: [...ALL_MOODS] };
+    custom = [entry, ...custom];
+    saveCustom(custom);
+    return entry;
+  }
+
+  function deleteCustomQuote(index) {
+    custom = custom.filter((_, i) => i !== index);
+    saveCustom(custom);
+  }
+
+  return {
+    timeOfDay, motivationMessage, inspirationForNow, pickQuote,
+    getManaged, addQuote, deleteCustomQuote,
+  };
 })();
