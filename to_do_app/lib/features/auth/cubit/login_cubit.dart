@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/auth/session_cubit.dart';
+import '../../../core/network/api_exception.dart';
 import '../../../core/utils/form_status.dart';
 import '../../../data/repositories/auth_repository.dart';
 
@@ -47,8 +49,9 @@ class LoginState extends Equatable {
 
 class LoginCubit extends Cubit<LoginState> {
   final AuthRepository _repository;
+  final SessionCubit _session;
 
-  LoginCubit(this._repository) : super(const LoginState());
+  LoginCubit(this._repository, this._session) : super(const LoginState());
 
   void emailChanged(String value) => emit(state.copyWith(email: value, status: FormStatus.initial));
 
@@ -65,8 +68,11 @@ class LoginCubit extends Cubit<LoginState> {
     }
     emit(state.copyWith(status: FormStatus.submitting));
     try {
-      await _repository.login(email: state.email, password: state.password);
+      final user = await _repository.login(email: state.email, password: state.password);
+      _session.setAuthenticated(user);
       emit(state.copyWith(status: FormStatus.success));
+    } on ApiException catch (e) {
+      emit(state.copyWith(status: FormStatus.failure, error: e.displayMessage));
     } catch (e) {
       emit(state.copyWith(status: FormStatus.failure, error: 'Something went wrong. Please try again.'));
     }

@@ -9,19 +9,19 @@ import '../../../data/repositories/user_repository.dart';
 class AchievementsState extends Equatable {
   final FormStatus status;
   final UserModel? user;
-  final List<BadgeModel> badges;
+  final List<UserBadgeModel> badges;
 
   const AchievementsState({this.status = FormStatus.initial, this.user, this.badges = const []});
 
   int get earnedCount => badges.where((b) => b.earned).length;
 
-  List<BadgeModel> get earnedSortedByDate {
+  List<UserBadgeModel> get earnedSortedByDate {
     final earned = badges.where((b) => b.earned && b.earnedDate != null).toList();
     earned.sort((a, b) => b.earnedDate!.compareTo(a.earnedDate!));
     return earned;
   }
 
-  AchievementsState copyWith({FormStatus? status, UserModel? user, List<BadgeModel>? badges}) {
+  AchievementsState copyWith({FormStatus? status, UserModel? user, List<UserBadgeModel>? badges}) {
     return AchievementsState(status: status ?? this.status, user: user ?? this.user, badges: badges ?? this.badges);
   }
 
@@ -38,7 +38,11 @@ class AchievementsCubit extends Cubit<AchievementsState> {
 
   Future<void> load() async {
     emit(state.copyWith(status: FormStatus.submitting));
-    final results = await Future.wait([_repository.getCurrentUser(), _repository.getBadges()]);
-    emit(state.copyWith(status: FormStatus.success, user: results[0] as UserModel, badges: results[1] as List<BadgeModel>));
+    try {
+      final results = await Future.wait([_repository.getCurrentUser(), _repository.getBadges()]);
+      emit(state.copyWith(status: FormStatus.success, user: results[0] as UserModel, badges: results[1] as List<UserBadgeModel>));
+    } catch (_) {
+      emit(state.copyWith(status: FormStatus.failure));
+    }
   }
 }

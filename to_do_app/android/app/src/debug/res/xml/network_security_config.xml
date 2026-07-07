@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug-build-only override (merged in via android/app/src/debug/AndroidManifest.xml).
+  Android blocks plain HTTP by default on API 28+; the real backend during
+  local dev is plain HTTP (Laravel's dev server / Laragon), so this allows
+  cleartext traffic for debug builds only. Release builds get no such
+  override and stay HTTPS-only.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

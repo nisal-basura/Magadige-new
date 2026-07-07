@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/auth/session_cubit.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/form_status.dart';
 import '../../../core/widgets/gradient_button.dart';
@@ -15,7 +16,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LoginCubit(context.read<AuthRepository>()),
+      create: (context) => LoginCubit(context.read<AuthRepository>(), context.read<SessionCubit>()),
       child: const _LoginView(),
     );
   }
@@ -119,35 +120,6 @@ class _LoginView extends StatelessWidget {
                     label: 'Log in',
                     loading: state.status == FormStatus.submitting,
                     onPressed: cubit.submit,
-                  ),
-                  const SizedBox(height: 24),
-                  Row(children: [
-                    Expanded(child: Divider(color: p.borderSubtle)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text('OR CONTINUE WITH', style: Theme.of(context).textTheme.labelSmall),
-                    ),
-                    Expanded(child: Divider(color: p.borderSubtle)),
-                  ]),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () => context.go('/dashboard'),
-                          icon: const Icon(Icons.g_mobiledata_rounded, size: 22),
-                          label: const Text('Google'),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () => context.go('/dashboard'),
-                          icon: const Icon(Icons.code_rounded, size: 18),
-                          label: const Text('GitHub'),
-                        ),
-                      ),
-                    ],
                   ),
                   const SizedBox(height: 24),
                   Center(

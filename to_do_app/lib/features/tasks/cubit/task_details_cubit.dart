@@ -1,8 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../data/models/category_model.dart';
+import '../../../data/models/subtask_model.dart';
+import '../../../data/models/tag_model.dart';
 import '../../../data/models/task_model.dart';
+import '../../../data/repositories/subtask_repository.dart';
+import '../../../data/repositories/tag_repository.dart';
 import '../../../data/repositories/task_repository.dart';
 
 class TaskComment extends Equatable {
@@ -31,54 +34,88 @@ class TaskDetailsState extends Equatable {
   List<Object?> get props => [task, comments, loading];
 }
 
+/// Loads via the task-show endpoint specifically (not the list), since only
+/// `show` returns the full `subtasks`/`tags` needed for this screen.
 class TaskDetailsCubit extends Cubit<TaskDetailsState> {
-  final TaskRepository _repository;
+  final TaskRepository _taskRepository;
+  final SubtaskRepository _subtaskRepository;
+  final TagRepository _tagRepository;
   final String taskId;
 
-  TaskDetailsCubit(this._repository, this.taskId) : super(const TaskDetailsState()) {
+  TaskDetailsCubit(this._taskRepository, this._subtaskRepository, this._tagRepository, this.taskId)
+      : super(const TaskDetailsState()) {
     _load();
   }
 
   Future<void> _load() async {
-    final all = await _repository.fetchTasks();
-    final task = all.where((t) => t.id == taskId).cast<TaskModel?>().firstWhere((t) => t != null, orElse: () => null);
-    emit(state.copyWith(
-      task: task,
-      loading: false,
-      comments: const [
-        TaskComment(author: 'Amaka Nwosu', initials: 'AN', time: '2 days ago', text: "Let's make sure this aligns with the roadmap before we finalize."),
-        TaskComment(author: 'Tunde Bakare', initials: 'TB', time: '1 day ago', text: 'Looks solid — left a couple of notes on the draft doc.'),
-      ],
-    ));
-  }
-
-  Future<void> toggleSubtask(int index) async {
-    final task = state.task;
-    if (task == null) return;
-    final total = task.subtasks.length;
-    if (total == 0) return;
-    final doneCount = ((task.progress / 100) * total).round();
-    final currentlyDone = index < doneCount;
-    final newDoneCount = currentlyDone ? doneCount - 1 : doneCount + 1;
-    final progress = ((newDoneCount / total) * 100).round();
-    final status = progress == 100 ? TaskStatus.completed : (progress > 0 ? TaskStatus.inProgress : TaskStatus.pending);
-    final updated = task.copyWith(progress: progress, status: status);
-    await _repository.updateTask(updated);
-    emit(state.copyWith(task: updated));
+    try {
+      final task = await _taskRepository.fetchTask(taskId);
+      emit(state.copyWith(
+        task: task,
+        loading: false,
+        comments: const [
+          TaskComment(author: 'Amaka Nwosu', initials: 'AN', time: '2 days ago', text: "Let's make sure this aligns with the roadmap before we finalize."),
+          TaskComment(author: 'Tunde Bakare', initials: 'TB', time: '1 day ago', text: 'Looks solid — left a couple of notes on the draft doc.'),
+        ],
+      ));
+    } catch (_) {
+      emit(state.copyWith(loading: false));
+    }
   }
 
   Future<void> toggleFavorite() async {
     final task = state.task;
     if (task == null) return;
-    final updated = task.copyWith(favorite: !task.favorite);
-    await _repository.updateTask(updated);
-    emit(state.copyWith(task: updated));
+    final updated = await _taskRepository.toggleFavorite(task.id);
+    emit(state.copyWith(task: updated.mergeInto(task)));
   }
 
   Future<void> delete() async {
     final task = state.task;
     if (task == null) return;
-    await _repository.deleteTask(task.id);
+    await _taskRepository.deleteTask(task.id);
+  }
+
+  Future<void> addSubtask(String title) async {
+    final task = state.task;
+    if (task == null || title.trim().isEmpty) return;
+    final subtask = await _subtaskRepository.addSubtask(task.id, title.trim());
+    emit(state.copyWith(
+      task: task.copyWith(subtasks: [...?task.subtasks, subtask], subtasksCount: (task.subtasksCount ?? 0) + 1),
+    ));
+  }
+
+  Future<void> toggleSubtask(SubtaskModel subtask) async {
+    final task = state.task;
+    if (task == null) return;
+    final updated = await _subtaskRepository.updateSubtask(subtask.id, isDone: !subtask.isDone);
+    final subtasks = task.subtasks?.map((s) => s.id == updated.id ? updated : s).toList();
+    emit(state.copyWith(task: task.copyWith(subtasks: subtasks)));
+  }
+
+  Future<void> deleteSubtask(SubtaskModel subtask) async {
+    final task = state.task;
+    if (task == null) return;
+    await _subtaskRepository.deleteSubtask(subtask.id);
+    final subtasks = task.subtasks?.where((s) => s.id != subtask.id).toList();
+    final count = task.subtasksCount;
+    emit(state.copyWith(task: task.copyWith(subtasks: subtasks, subtasksCount: count == null ? null : count - 1)));
+  }
+
+  Future<List<TagModel>> fetchAllTags() => _tagRepository.fetchTags();
+
+  Future<TagModel> createTag(String label) => _tagRepository.createTag(label);
+
+  /// Unlike the other write endpoints, tag-sync's response only reloads
+  /// `tags` (no `category`/`dream`) — so this applies just the tags onto the
+  /// already-known task rather than going through the generic [TaskModel.mergeInto],
+  /// which would otherwise read the response's missing category/dream as
+  /// "cleared" and wipe them from state.
+  Future<void> setTags(List<String> tagIds) async {
+    final task = state.task;
+    if (task == null) return;
+    final updated = await _tagRepository.syncTaskTags(task.id, tagIds);
+    emit(state.copyWith(task: task.copyWith(tags: updated.tags)));
   }
 
   void addComment(String text) {
@@ -87,15 +124,5 @@ class TaskDetailsCubit extends Cubit<TaskDetailsState> {
       ...state.comments,
       TaskComment(author: 'You', initials: 'ME', time: 'Just now', text: text.trim()),
     ]));
-  }
-
-  /// How many of the subtasks are "done" given the task's overall progress —
-  /// mirrors the same derived-checklist trick used on web (progress drives
-  /// how many items read as complete).
-  bool isSubtaskDone(int index) {
-    final task = state.task;
-    if (task == null || task.subtasks.isEmpty) return false;
-    final doneCount = ((task.progress / 100) * task.subtasks.length).round();
-    return index < doneCount;
   }
 }

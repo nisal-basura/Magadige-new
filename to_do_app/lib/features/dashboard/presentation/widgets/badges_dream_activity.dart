@@ -9,7 +9,7 @@ import '../../../../data/models/dream_model.dart';
 import '../../../../data/models/task_model.dart';
 
 class BadgesPreview extends StatelessWidget {
-  final List<BadgeModel> badges;
+  final List<UserBadgeModel> badges;
   const BadgesPreview({super.key, required this.badges});
 
   @override
@@ -41,10 +41,10 @@ class BadgesPreview extends StatelessWidget {
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(color: p.brandSoft, shape: BoxShape.circle),
-                      child: Icon(b.icon, size: 20, color: p.brandStrong),
+                      child: Icon(b.badge.icon, size: 20, color: p.brandStrong),
                     ),
                     const SizedBox(height: 6),
-                    Text(b.label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700)),
+                    Text(b.badge.label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700)),
                   ],
                 ),
               );
@@ -137,8 +137,9 @@ class UpcomingTasksList extends StatelessWidget {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('${t.due.day}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13, height: 1)),
-                            Text(DateFormat('MMM').format(t.due).toUpperCase(), style: TextStyle(fontSize: 8, color: p.textTertiary, fontWeight: FontWeight.w700)),
+                            Text(t.due == null ? '—' : '${t.due!.day}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13, height: 1)),
+                            if (t.due != null)
+                              Text(DateFormat('MMM').format(t.due!).toUpperCase(), style: TextStyle(fontSize: 8, color: p.textTertiary, fontWeight: FontWeight.w700)),
                           ],
                         ),
                       ),

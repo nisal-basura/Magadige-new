@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_progress_bar.dart';
 import '../../../core/widgets/app_scaffold.dart';
@@ -80,16 +81,16 @@ class _AchievementsView extends StatelessWidget {
                               width: 52,
                               height: 52,
                               decoration: BoxDecoration(color: p.brandSoft, shape: BoxShape.circle),
-                              child: Icon(b.icon, color: p.brandStrong, size: 24),
+                              child: Icon(b.badge.icon, color: p.brandStrong, size: 24),
                             ),
                           ),
                           const SizedBox(height: 8),
-                          Text(b.label, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5)),
+                          Text(b.badge.label, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5)),
                           const SizedBox(height: 4),
-                          Text(b.description, textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodySmall),
+                          Text(b.badge.description, textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodySmall),
                           const SizedBox(height: 6),
                           if (b.earned)
-                            Text('Earned ${DateFormat('MMM d').format(b.earnedDate!)}', style: const TextStyle(color: Color(0xFF16A374), fontWeight: FontWeight.w700, fontSize: 10.5))
+                            Text('Earned ${DateFormat('MMM d').format(b.earnedDate!)}', style: const TextStyle(color: AppColors.mint600, fontWeight: FontWeight.w700, fontSize: 10.5))
                           else ...[
                             AppProgressBar(progress: b.progress, height: 4, gradient: [p.accent, p.accent]),
                             const SizedBox(height: 3),
@@ -115,13 +116,13 @@ class _AchievementsView extends StatelessWidget {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(width: 10, height: 10, margin: const EdgeInsets.only(top: 3), decoration: const BoxDecoration(color: Color(0xFF22C58B), shape: BoxShape.circle)),
+                                Container(width: 10, height: 10, margin: const EdgeInsets.only(top: 3), decoration: const BoxDecoration(color: AppColors.mint500, shape: BoxShape.circle)),
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(b.label, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                                      Text(b.badge.label, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
                                       Text(DateFormat('MMMM d, y').format(b.earnedDate!), style: Theme.of(context).textTheme.bodySmall),
                                     ],
                                   ),

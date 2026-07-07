@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../../core/auth/session_cubit.dart';
+import '../../../core/network/api_exception.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/theme_cubit.dart';
 import '../../../core/theme/theme_state.dart';
 import '../../../core/widgets/app_scaffold.dart';
-import '../../../data/datasources/local_data_store.dart';
+import '../../../data/repositories/auth_repository.dart';
 import '../cubit/settings_cubit.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -42,11 +44,11 @@ class _SettingsView extends StatelessWidget {
               _sectionCard(context, 'Appearance', 'Choose how Magadige Task looks.', [
                 Row(
                   children: [
-                    _themePreview(context, 'Day', ThemeChoice.day, themeChoice, [const Color(0xFFF7F6FF), const Color(0xFFEEF8FF)]),
+                    _themePreview(context, 'Day', ThemeChoice.day, themeChoice, [Colors.white, AppColors.cosmicLatte]),
                     const SizedBox(width: 10),
-                    _themePreview(context, 'Auto', ThemeChoice.auto, themeChoice, [const Color(0xFFF7F6FF), const Color(0xFF100F1C)]),
+                    _themePreview(context, 'Auto', ThemeChoice.auto, themeChoice, [AppColors.gray100, const Color(0xFF081613)]),
                     const SizedBox(width: 10),
-                    _themePreview(context, 'Night', ThemeChoice.night, themeChoice, [const Color(0xFF100F1C), const Color(0xFF1A1930)]),
+                    _themePreview(context, 'Night', ThemeChoice.night, themeChoice, [const Color(0xFF081613), AppColors.nightSurface2]),
                   ],
                 ),
               ]),
@@ -80,7 +82,7 @@ class _SettingsView extends StatelessWidget {
                   contentPadding: EdgeInsets.zero,
                   title: const Text('Password', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
                   subtitle: const Text('Last changed 3 months ago'),
-                  trailing: OutlinedButton(onPressed: () {}, child: const Text('Change')),
+                  trailing: OutlinedButton(onPressed: () => _showChangePasswordDialog(context), child: const Text('Change')),
                 ),
                 _toggleRow(context, 'Two-factor authentication', 'Add an extra layer of protection', state.twoFactor, (_) => cubit.toggleTwoFactor(), showDivider: false),
               ]),
@@ -96,16 +98,16 @@ class _SettingsView extends StatelessWidget {
                 const SizedBox(height: 14),
                 Container(
                   padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(color: const Color(0xFFFFF1F1), borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFFFD3D3))),
+                  decoration: BoxDecoration(color: AppColors.coralSoft, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.coralSoftBorder)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Delete Account', style: TextStyle(color: Color(0xFFEE4F4F), fontWeight: FontWeight.w800, fontSize: 14)),
+                      const Text('Delete Account', style: TextStyle(color: AppColors.coral600, fontWeight: FontWeight.w800, fontSize: 14)),
                       const SizedBox(height: 4),
                       const Text("This permanently deletes your account, tasks, and dreams.", style: TextStyle(fontSize: 12)),
                       const SizedBox(height: 10),
                       ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFEE4F4F)),
+                        style: ElevatedButton.styleFrom(backgroundColor: AppColors.coral600),
                         onPressed: () => _confirmDelete(context),
                         child: const Text('Delete my account'),
                       ),
@@ -120,6 +122,49 @@ class _SettingsView extends StatelessWidget {
     );
   }
 
+  void _showChangePasswordDialog(BuildContext context) {
+    final authRepository = context.read<AuthRepository>();
+    final currentController = TextEditingController();
+    final newController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Change password'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: currentController, obscureText: true, decoration: const InputDecoration(labelText: 'Current password')),
+            const SizedBox(height: 12),
+            TextField(controller: newController, obscureText: true, decoration: const InputDecoration(labelText: 'New password')),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(dialogContext).pop(), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () async {
+              final messenger = ScaffoldMessenger.of(context);
+              try {
+                await authRepository.changePassword(
+                  currentPassword: currentController.text,
+                  newPassword: newController.text,
+                );
+                if (dialogContext.mounted) Navigator.of(dialogContext).pop();
+                messenger
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(const SnackBar(content: Text('Password changed.')));
+              } on ApiException catch (e) {
+                messenger
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(SnackBar(content: Text(e.displayMessage)));
+              }
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _confirmDelete(BuildContext context) {
     showDialog(
       context: context,
@@ -129,12 +174,12 @@ class _SettingsView extends StatelessWidget {
         actions: [
           TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
           TextButton(
-            onPressed: () {
-              LocalDataStore.instance.reset();
+            onPressed: () async {
               Navigator.of(context).pop();
-              context.go('/login');
+              await context.read<AuthRepository>().logout();
+              if (context.mounted) context.read<SessionCubit>().setUnauthenticated();
             },
-            child: const Text('Delete', style: TextStyle(color: Color(0xFFEE4F4F))),
+            child: const Text('Delete', style: TextStyle(color: AppColors.coral600)),
           ),
         ],
       ),

@@ -6,8 +6,10 @@ import '../../../core/theme/theme_cubit.dart';
 import '../../../core/utils/motivation.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../../../data/repositories/dream_repository.dart';
+import '../../../data/repositories/quote_repository.dart';
 import '../../../data/repositories/task_repository.dart';
 import '../../../data/repositories/user_repository.dart';
+import '../../categories/cubit/categories_cubit.dart';
 import '../cubit/dashboard_cubit.dart';
 import 'widgets/badges_dream_activity.dart';
 import 'widgets/dashboard_charts.dart';
@@ -27,6 +29,8 @@ class DashboardScreen extends StatelessWidget {
         context.read<TaskRepository>(),
         context.read<DreamRepository>(),
         context.read<UserRepository>(),
+        context.read<QuoteRepository>(),
+        context.read<CategoriesCubit>(),
       ),
       child: const _DashboardView(),
     );
@@ -53,7 +57,10 @@ class _DashboardView extends StatelessWidget {
           overdue: state.overdue,
           total: state.tasks.length,
         );
-        final quote = Motivation.inspirationFor(period, overdue: state.overdue);
+        final apiQuote = state.quote;
+        final quote = apiQuote != null
+            ? Quote(apiQuote.text, apiQuote.author ?? '')
+            : Motivation.inspirationFor(period, overdue: state.overdue);
         final firstName = state.user!.name.split(' ').first;
 
         return AppScaffold(

@@ -14,7 +14,7 @@ import '../../../data/repositories/user_repository.dart';
 class ProfileState extends Equatable {
   final FormStatus status;
   final UserModel? user;
-  final List<BadgeModel> badges;
+  final List<UserBadgeModel> badges;
   final int completedTasks;
   final int dreamsInMotion;
 
@@ -26,7 +26,7 @@ class ProfileState extends Equatable {
     this.dreamsInMotion = 0,
   });
 
-  ProfileState copyWith({FormStatus? status, UserModel? user, List<BadgeModel>? badges, int? completedTasks, int? dreamsInMotion}) {
+  ProfileState copyWith({FormStatus? status, UserModel? user, List<UserBadgeModel>? badges, int? completedTasks, int? dreamsInMotion}) {
     return ProfileState(
       status: status ?? this.status,
       user: user ?? this.user,
@@ -51,20 +51,24 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> load() async {
     emit(state.copyWith(status: FormStatus.submitting));
-    final results = await Future.wait([
-      _userRepository.getCurrentUser(),
-      _userRepository.getBadges(),
-      _taskRepository.fetchTasks(),
-      _dreamRepository.fetchDreams(),
-    ]);
-    final tasks = results[2] as List<TaskModel>;
-    final dreams = results[3] as List<DreamModel>;
-    emit(state.copyWith(
-      status: FormStatus.success,
-      user: results[0] as UserModel,
-      badges: results[1] as List<BadgeModel>,
-      completedTasks: tasks.where((t) => t.status == TaskStatus.completed).length,
-      dreamsInMotion: dreams.length,
-    ));
+    try {
+      final results = await Future.wait([
+        _userRepository.getCurrentUser(),
+        _userRepository.getBadges(),
+        _taskRepository.fetchTasks(),
+        _dreamRepository.fetchDreams(),
+      ]);
+      final tasks = results[2] as List<TaskModel>;
+      final dreams = results[3] as List<DreamModel>;
+      emit(state.copyWith(
+        status: FormStatus.success,
+        user: results[0] as UserModel,
+        badges: results[1] as List<UserBadgeModel>,
+        completedTasks: tasks.where((t) => t.status == TaskStatus.completed).length,
+        dreamsInMotion: dreams.length,
+      ));
+    } catch (_) {
+      emit(state.copyWith(status: FormStatus.failure));
+    }
   }
 }

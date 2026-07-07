@@ -130,7 +130,7 @@ class _KanbanCard extends StatelessWidget {
                   const SizedBox(width: 5),
                   Text(task.category.label, style: Theme.of(context).textTheme.bodySmall),
                   const Spacer(),
-                  Text(DateFormat('MMM d').format(task.due), style: TextStyle(fontSize: 10, color: p.textTertiary, fontWeight: FontWeight.w600)),
+                  Text(task.due == null ? '—' : DateFormat('MMM d').format(task.due!), style: TextStyle(fontSize: 10, color: p.textTertiary, fontWeight: FontWeight.w600)),
                 ],
               ),
             ],

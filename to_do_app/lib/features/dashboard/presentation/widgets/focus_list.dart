@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/empty_state_view.dart';
 import '../../../../core/widgets/priority_dot.dart';
@@ -111,8 +112,8 @@ class _FocusRow extends StatelessWidget {
                 height: 22,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: done ? const Color(0xFF22C58B) : Colors.transparent,
-                  border: Border.all(color: done ? const Color(0xFF22C58B) : p.borderStrong, width: 2),
+                  color: done ? AppColors.mint500 : Colors.transparent,
+                  border: Border.all(color: done ? AppColors.mint500 : p.borderStrong, width: 2),
                 ),
                 child: done ? const Icon(Icons.check, size: 13, color: Colors.white) : null,
               ),

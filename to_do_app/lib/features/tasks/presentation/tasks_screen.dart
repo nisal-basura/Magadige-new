@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../../../core/widgets/empty_state_view.dart';
+import '../../../data/repositories/subtask_repository.dart';
 import '../../../data/repositories/task_repository.dart';
 import '../cubit/tasks_cubit.dart';
 import 'widgets/create_task_sheet.dart';
@@ -18,7 +19,7 @@ class TasksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TasksCubit(context.read<TaskRepository>()),
+      create: (context) => TasksCubit(context.read<TaskRepository>(), context.read<SubtaskRepository>()),
       child: const _TasksView(),
     );
   }
@@ -39,7 +40,7 @@ class _TasksView extends StatelessWidget {
           title: 'Tasks',
           subtitle: 'Everything you need to do.',
           floatingActionButton: FloatingActionButton.extended(
-            onPressed: () => showTaskFormSheet(context, onSave: (task, isNew) => cubit.saveTask(task, isNew: isNew)),
+            onPressed: () => showTaskFormSheet(context, onSave: (task, isNew, subtaskTitles) => cubit.saveTask(task, isNew: isNew, subtaskTitles: subtaskTitles)),
             icon: const Icon(Icons.add_rounded),
             label: const Text('New Task'),
           ),
@@ -78,7 +79,6 @@ class _TasksView extends StatelessWidget {
                       Text('${state.selected.length} selected', style: TextStyle(color: p.bgSurface, fontWeight: FontWeight.w700, fontSize: 12.5)),
                       Row(children: [
                         IconButton(icon: Icon(Icons.check_rounded, color: p.bgSurface, size: 18), onPressed: () => cubit.bulkApply('complete'), tooltip: 'Complete'),
-                        IconButton(icon: Icon(Icons.archive_outlined, color: p.bgSurface, size: 18), onPressed: () => cubit.bulkApply('archive'), tooltip: 'Archive'),
                         IconButton(icon: Icon(Icons.copy_rounded, color: p.bgSurface, size: 18), onPressed: () => cubit.bulkApply('duplicate'), tooltip: 'Duplicate'),
                         IconButton(icon: Icon(Icons.delete_outline_rounded, color: p.bgSurface, size: 18), onPressed: () => cubit.bulkApply('delete'), tooltip: 'Delete'),
                       ]),
@@ -110,7 +110,6 @@ class _TasksView extends StatelessWidget {
                                   onTap: () => context.push('/tasks/${t.id}'),
                                   onToggleFavorite: () => cubit.toggleFavorite(t),
                                   onDuplicate: () => cubit.duplicateTask(t),
-                                  onArchive: () => cubit.archiveTask(t),
                                   onDelete: () => cubit.deleteTask(t),
                                 );
                               },

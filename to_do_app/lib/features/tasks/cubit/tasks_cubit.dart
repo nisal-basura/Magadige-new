@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/utils/form_status.dart';
 import '../../../data/models/category_model.dart';
 import '../../../data/models/task_model.dart';
+import '../../../data/repositories/subtask_repository.dart';
 import '../../../data/repositories/task_repository.dart';
 
 enum TaskViewMode { list, kanban }
@@ -36,10 +37,10 @@ class TasksState extends Equatable {
   });
 
   List<TaskModel> get filtered {
-    var list = tasks.where((t) => !t.archived).toList();
+    var list = tasks.toList();
     if (search.trim().isNotEmpty) {
       final q = search.toLowerCase();
-      list = list.where((t) => t.title.toLowerCase().contains(q) || t.tags.any((tag) => tag.toLowerCase().contains(q))).toList();
+      list = list.where((t) => t.title.toLowerCase().contains(q) || t.tags.any((tag) => tag.label.toLowerCase().contains(q))).toList();
     }
     switch (statusFilter) {
       case TaskStatusFilter.all:
@@ -59,7 +60,10 @@ class TasksState extends Equatable {
     list.sort((a, b) {
       switch (sort) {
         case TaskSort.due:
-          return a.due.compareTo(b.due);
+          if (a.due == null && b.due == null) return 0;
+          if (a.due == null) return 1;
+          if (b.due == null) return -1;
+          return a.due!.compareTo(b.due!);
         case TaskSort.priority:
           const rank = {TaskPriority.high: 0, TaskPriority.medium: 1, TaskPriority.low: 2};
           return rank[a.priority]!.compareTo(rank[b.priority]!);
@@ -100,15 +104,20 @@ class TasksState extends Equatable {
 
 class TasksCubit extends Cubit<TasksState> {
   final TaskRepository _repository;
+  final SubtaskRepository _subtaskRepository;
 
-  TasksCubit(this._repository) : super(const TasksState()) {
+  TasksCubit(this._repository, this._subtaskRepository) : super(const TasksState()) {
     load();
   }
 
   Future<void> load() async {
     emit(state.copyWith(status: FormStatus.submitting));
-    final tasks = await _repository.fetchTasks();
-    emit(state.copyWith(status: FormStatus.success, tasks: tasks));
+    try {
+      final tasks = await _repository.fetchTasks();
+      emit(state.copyWith(status: FormStatus.success, tasks: tasks));
+    } catch (_) {
+      emit(state.copyWith(status: FormStatus.failure));
+    }
   }
 
   void setSearch(String v) => emit(state.copyWith(search: v));
@@ -134,42 +143,19 @@ class TasksCubit extends Cubit<TasksState> {
   void clearSelection() => emit(state.copyWith(selected: {}));
 
   Future<void> toggleFavorite(TaskModel task) async {
-    final updated = task.copyWith(favorite: !task.favorite);
-    await _repository.updateTask(updated);
-    _replace(updated);
+    final updated = await _repository.toggleFavorite(task.id);
+    _replace(updated.mergeInto(task));
   }
 
   Future<void> updateStatus(TaskModel task, TaskStatus status) async {
-    final updated = task.copyWith(status: status, progress: status == TaskStatus.completed ? 100 : task.progress);
-    await _repository.updateTask(updated);
-    _replace(updated);
+    final updated = await _repository.setStatus(task.id, status);
+    _replace(updated.mergeInto(task));
   }
 
   Future<void> duplicateTask(TaskModel task) async {
-    final copy = task.copyWith(title: '${task.title} (copy)');
-    final withId = TaskModel(
-      id: 't${DateTime.now().millisecondsSinceEpoch}',
-      title: copy.title,
-      description: copy.description,
-      category: copy.category,
-      priority: copy.priority,
-      status: copy.status,
-      due: copy.due,
-      tags: copy.tags,
-      estimate: copy.estimate,
-      progress: copy.progress,
-      favorite: copy.favorite,
-      createdAt: DateTime.now(),
-      subtasks: copy.subtasks,
-    );
-    await _repository.createTask(withId);
-    emit(state.copyWith(tasks: [withId, ...state.tasks]));
-  }
-
-  Future<void> archiveTask(TaskModel task) async {
-    final updated = task.copyWith(archived: true);
-    await _repository.updateTask(updated);
-    _replace(updated);
+    final copy = task.copyWith(title: '${task.title} (copy)', favorite: false);
+    final created = await _repository.createTask(copy);
+    emit(state.copyWith(tasks: [created, ...state.tasks]));
   }
 
   Future<void> deleteTask(TaskModel task) async {
@@ -177,13 +163,18 @@ class TasksCubit extends Cubit<TasksState> {
     emit(state.copyWith(tasks: state.tasks.where((t) => t.id != task.id).toList()));
   }
 
-  Future<void> saveTask(TaskModel task, {required bool isNew}) async {
+  Future<void> saveTask(TaskModel task, {required bool isNew, List<String> subtaskTitles = const []}) async {
     if (isNew) {
-      await _repository.createTask(task);
-      emit(state.copyWith(tasks: [task, ...state.tasks]));
+      var created = await _repository.createTask(task);
+      final titles = subtaskTitles.map((t) => t.trim()).where((t) => t.isNotEmpty);
+      for (final title in titles) {
+        await _subtaskRepository.addSubtask(created.id, title);
+      }
+      if (titles.isNotEmpty) created = await _repository.fetchTask(created.id);
+      emit(state.copyWith(tasks: [created, ...state.tasks]));
     } else {
-      await _repository.updateTask(task);
-      _replace(task);
+      final updated = await _repository.updateTask(task);
+      _replace(updated);
     }
   }
 
@@ -194,8 +185,6 @@ class TasksCubit extends Cubit<TasksState> {
       switch (action) {
         case 'complete':
           await updateStatus(task, TaskStatus.completed);
-        case 'archive':
-          await archiveTask(task);
         case 'delete':
           await deleteTask(task);
         case 'duplicate':

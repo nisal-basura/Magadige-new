@@ -14,25 +14,44 @@ import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/shell/presentation/welcome_screen.dart';
 import '../../features/tasks/presentation/task_details_screen.dart';
 import '../../features/tasks/presentation/tasks_screen.dart';
+import '../auth/session_cubit.dart';
+import 'go_router_refresh_stream.dart';
+
+const _publicPaths = {'/', '/login', '/register', '/forgot-password'};
 
 /// Centralized route table — every screen in the app is reachable by a
 /// stable path, so deep links / push notifications can target them later.
-final appRouter = GoRouter(
-  initialLocation: '/',
-  routes: [
-    GoRoute(path: '/', builder: (context, state) => const WelcomeScreen()),
-    GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
-    GoRoute(path: '/register', builder: (context, state) => const RegisterScreen()),
-    GoRoute(path: '/forgot-password', builder: (context, state) => const ForgotPasswordScreen()),
-    GoRoute(path: '/dashboard', builder: (context, state) => const DashboardScreen()),
-    GoRoute(path: '/tasks', builder: (context, state) => const TasksScreen()),
-    GoRoute(path: '/tasks/:id', builder: (context, state) => TaskDetailsScreen(taskId: state.pathParameters['id']!)),
-    GoRoute(path: '/dreams', builder: (context, state) => const DreamsScreen()),
-    GoRoute(path: '/calendar', builder: (context, state) => const CalendarScreen()),
-    GoRoute(path: '/analytics', builder: (context, state) => const AnalyticsScreen()),
-    GoRoute(path: '/achievements', builder: (context, state) => const AchievementsScreen()),
-    GoRoute(path: '/inbox', builder: (context, state) => const InboxScreen()),
-    GoRoute(path: '/profile', builder: (context, state) => const ProfileScreen()),
-    GoRoute(path: '/settings', builder: (context, state) => const SettingsScreen()),
-  ],
-);
+/// Auth-gated via [SessionCubit]: unauthenticated users get bounced to
+/// `/login` from any protected route, and an already-authenticated session
+/// skips past the welcome/login/register screens straight to the dashboard.
+GoRouter buildAppRouter(SessionCubit sessionCubit) {
+  return GoRouter(
+    initialLocation: '/',
+    refreshListenable: GoRouterRefreshStream(sessionCubit.stream),
+    redirect: (context, state) {
+      final status = sessionCubit.state.status;
+      if (status == SessionStatus.unknown) return null;
+
+      final isPublic = _publicPaths.contains(state.matchedLocation);
+      if (status == SessionStatus.unauthenticated && !isPublic) return '/login';
+      if (status == SessionStatus.authenticated && isPublic) return '/dashboard';
+      return null;
+    },
+    routes: [
+      GoRoute(path: '/', builder: (context, state) => const WelcomeScreen()),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(path: '/register', builder: (context, state) => const RegisterScreen()),
+      GoRoute(path: '/forgot-password', builder: (context, state) => const ForgotPasswordScreen()),
+      GoRoute(path: '/dashboard', builder: (context, state) => const DashboardScreen()),
+      GoRoute(path: '/tasks', builder: (context, state) => const TasksScreen()),
+      GoRoute(path: '/tasks/:id', builder: (context, state) => TaskDetailsScreen(taskId: state.pathParameters['id']!)),
+      GoRoute(path: '/dreams', builder: (context, state) => const DreamsScreen()),
+      GoRoute(path: '/calendar', builder: (context, state) => const CalendarScreen()),
+      GoRoute(path: '/analytics', builder: (context, state) => const AnalyticsScreen()),
+      GoRoute(path: '/achievements', builder: (context, state) => const AchievementsScreen()),
+      GoRoute(path: '/inbox', builder: (context, state) => const InboxScreen()),
+      GoRoute(path: '/profile', builder: (context, state) => const ProfileScreen()),
+      GoRoute(path: '/settings', builder: (context, state) => const SettingsScreen()),
+    ],
+  );
+}

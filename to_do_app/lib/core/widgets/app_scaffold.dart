@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../data/datasources/local_data_store.dart';
+import '../../features/inbox/cubit/unread_count_cubit.dart';
 import '../../features/shell/presentation/app_drawer.dart';
+import '../auth/session_cubit.dart';
 import 'avatar_initials.dart';
 import 'theme_toggle_row.dart';
 
@@ -29,8 +31,8 @@ class AppScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unread = LocalDataStore.instance.notifications.where((n) => n.unread).length;
-    final user = LocalDataStore.instance.user;
+    final unread = context.watch<UnreadCountCubit>().state;
+    final user = context.watch<SessionCubit>().state.user;
 
     return Scaffold(
       drawer: const AppDrawer(),
@@ -78,7 +80,7 @@ class AppScaffold extends StatelessWidget {
             child: InkWell(
               customBorder: const CircleBorder(),
               onTap: () => context.go('/profile'),
-              child: AvatarInitials(initials: user.avatarInitials, size: 34),
+              child: AvatarInitials(initials: user?.avatarInitials ?? '?', size: 34),
             ),
           ),
         ],

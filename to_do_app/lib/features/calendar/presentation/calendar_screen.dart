@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../../../core/widgets/empty_state_view.dart';
 import '../../../core/widgets/priority_dot.dart';
 import '../../../data/models/category_model.dart';
 import '../../../data/repositories/task_repository.dart';
+import '../../categories/cubit/categories_cubit.dart';
 import '../cubit/calendar_cubit.dart';
 
 class CalendarScreen extends StatelessWidget {
@@ -17,7 +19,7 @@ class CalendarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CalendarCubit(context.read<TaskRepository>()),
+      create: (context) => CalendarCubit(context.read<TaskRepository>(), context.read<CategoriesCubit>()),
       child: const _CalendarView(),
     );
   }
@@ -38,7 +40,7 @@ class _CalendarView extends StatelessWidget {
         final month = state.visibleMonth;
         final firstWeekday = DateTime(month.year, month.month, 1).weekday % 7;
         final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
-        final taskDays = state.tasks.map((t) => DateTime(t.due.year, t.due.month, t.due.day)).toSet();
+        final taskDays = state.tasks.where((t) => t.due != null).map((t) => DateTime(t.due!.year, t.due!.month, t.due!.day)).toSet();
         final selectedTasks = state.tasksOn(state.selectedDate);
         final now = DateTime.now();
 
@@ -132,8 +134,8 @@ class _CalendarView extends StatelessWidget {
                                   height: 20,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: done ? const Color(0xFF22C58B) : Colors.transparent,
-                                    border: Border.all(color: done ? const Color(0xFF22C58B) : p.borderStrong, width: 2),
+                                    color: done ? AppColors.mint500 : Colors.transparent,
+                                    border: Border.all(color: done ? AppColors.mint500 : p.borderStrong, width: 2),
                                   ),
                                   child: done ? const Icon(Icons.check, size: 12, color: Colors.white) : null,
                                 ),

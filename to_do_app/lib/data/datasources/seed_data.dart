@@ -1,99 +1,118 @@
-import 'package:flutter/material.dart';
-
 import '../models/badge_model.dart';
 import '../models/category_model.dart';
 import '../models/dream_model.dart';
 import '../models/notification_model.dart';
+import '../models/subtask_model.dart';
+import '../models/tag_model.dart';
 import '../models/task_model.dart';
 import '../models/user_model.dart';
-import '../../core/theme/app_colors.dart';
 
-/// Static seed/demo data — the Dart equivalent of js/data.js. This is what
-/// the Mock*Repository implementations serve until a real backend is wired
-/// in; the shapes here are exactly what the API layer will eventually need
-/// to return.
+/// Static seed/demo data backing the Mock*Repository implementations used
+/// before a real backend is wired up (kept around for offline dev/tests —
+/// the live app talks to Api*Repository instead). Shapes mirror the real
+/// API's models exactly so swapping between them is transparent to Cubits.
 class SeedData {
   SeedData._();
 
   static DateTime _d(int y, int m, int d) => DateTime(y, m, d);
 
+  static const categories = [
+    CategoryModel(id: 'work', label: 'Work', colorRaw: '#3B82F6', iconRaw: 'briefcase'),
+    CategoryModel(id: 'personal', label: 'Personal', colorRaw: '#8B5CF6', iconRaw: 'user'),
+    CategoryModel(id: 'health', label: 'Health', colorRaw: '#10B981', iconRaw: 'heart'),
+    CategoryModel(id: 'study', label: 'Study', colorRaw: '#F59E0B', iconRaw: 'book'),
+    CategoryModel(id: 'finance', label: 'Finance', colorRaw: '#EF4444', iconRaw: 'dollar-sign'),
+    CategoryModel(id: 'home', label: 'Home', colorRaw: '#06B6D4', iconRaw: 'home'),
+  ];
+
+  static CategoryModel _cat(String id) => categories.firstWhere((c) => c.id == id);
+
   static final UserModel user = UserModel(
+    id: 1,
     name: 'Amaka Nwosu',
-    role: 'Product Designer @ Northwind Labs',
     email: 'nbcodezone@gmail.com',
-    avatarInitials: 'AN',
-    memberSince: 'March 2024',
+    role: 'user',
+    plan: 'Pro',
+    headline: 'Product Designer @ Northwind Labs',
     timezone: 'GMT+1 · Lagos',
     streakCurrent: 12,
     streakLongest: 34,
     productivityScore: 87,
-    plan: 'Premium Plan',
+    createdAt: _d(2024, 3, 1),
   );
+
+  static List<TagModel> tags() => const [
+        TagModel(id: '1', label: 'design'),
+        TagModel(id: '2', label: 'fitness'),
+        TagModel(id: '3', label: 'budget'),
+      ];
+
+  static List<SubtaskModel> subtasksFor(String taskId) => [
+        SubtaskModel(id: '${taskId}s1', taskId: taskId, title: 'Research & plan approach', isDone: true, position: 0),
+        SubtaskModel(id: '${taskId}s2', taskId: taskId, title: 'Execute the core work', isDone: true, position: 1),
+        SubtaskModel(id: '${taskId}s3', taskId: taskId, title: 'Review with a peer', isDone: false, position: 2),
+        SubtaskModel(id: '${taskId}s4', taskId: taskId, title: 'Polish & finalize', isDone: false, position: 3),
+      ];
 
   static List<TaskModel> tasks() => [
         TaskModel(
           id: 't1',
           title: 'Finalize onboarding flow wireframes',
           description: 'Polish the 5-step onboarding wireframes and prep for the Friday design crit with the growth team.',
-          category: TaskCategory.work,
+          category: _cat('work'),
           priority: TaskPriority.high,
           status: TaskStatus.inProgress,
           due: _d(2026, 7, 2),
-          tags: const ['design', 'onboarding'],
-          estimate: '3h',
-          progress: 65,
+          tags: [tags()[0]],
+          estimateMinutes: 180,
           favorite: true,
           createdAt: _d(2026, 6, 28),
-          subtasks: const ['Research & plan approach', 'Execute the core work', 'Review with a peer', 'Polish & finalize', 'Mark as complete'],
+          subtasks: subtasksFor('t1'),
         ),
         TaskModel(
           id: 't2',
           title: 'Morning run — 5km',
           description: 'Easy pace, focus on breathing rhythm.',
-          category: TaskCategory.health,
+          category: _cat('health'),
           priority: TaskPriority.medium,
           status: TaskStatus.pending,
           due: _d(2026, 7, 2),
-          tags: const ['fitness'],
-          estimate: '40m',
+          tags: [tags()[1]],
+          estimateMinutes: 40,
           createdAt: _d(2026, 6, 30),
         ),
         TaskModel(
           id: 't3',
           title: 'Review Q3 budget spreadsheet',
           description: 'Cross-check marketing spend against approved budget lines before the finance sync.',
-          category: TaskCategory.finance,
+          category: _cat('finance'),
           priority: TaskPriority.high,
           status: TaskStatus.overdue,
           due: _d(2026, 6, 30),
-          tags: const ['budget', 'review'],
-          estimate: '1h',
-          progress: 20,
+          tags: [tags()[2]],
+          estimateMinutes: 60,
           createdAt: _d(2026, 6, 25),
         ),
         TaskModel(
           id: 't4',
           title: "Read 'Deep Work' — Ch. 4",
           description: 'Continue reading, take notes for the book club discussion.',
-          category: TaskCategory.learning,
+          category: _cat('study'),
           priority: TaskPriority.low,
           status: TaskStatus.pending,
           due: _d(2026, 7, 3),
-          tags: const ['reading'],
-          estimate: '45m',
-          progress: 10,
+          estimateMinutes: 45,
           createdAt: _d(2026, 6, 29),
         ),
         TaskModel(
           id: 't5',
           title: 'Prepare investor update email',
           description: 'Summarize product milestones and MRR growth for the monthly investor newsletter.',
-          category: TaskCategory.work,
+          category: _cat('work'),
           priority: TaskPriority.high,
           status: TaskStatus.pending,
           due: _d(2026, 7, 4),
-          tags: const ['startup', 'writing'],
-          estimate: '2h',
+          estimateMinutes: 120,
           favorite: true,
           createdAt: _d(2026, 7, 1),
           dreamId: 'd2',
@@ -102,95 +121,12 @@ class SeedData {
           id: 't6',
           title: 'Grocery run for the week',
           description: 'Get produce, oats, and coffee beans.',
-          category: TaskCategory.personal,
+          category: _cat('personal'),
           priority: TaskPriority.low,
           status: TaskStatus.completed,
           due: _d(2026, 7, 1),
-          tags: const ['errands'],
-          estimate: '30m',
-          progress: 100,
+          estimateMinutes: 30,
           createdAt: _d(2026, 6, 27),
-        ),
-        TaskModel(
-          id: 't7',
-          title: 'Design system: audit color tokens',
-          description: 'Ensure new brand tokens map cleanly across day/night themes.',
-          category: TaskCategory.work,
-          priority: TaskPriority.medium,
-          status: TaskStatus.completed,
-          due: _d(2026, 6, 29),
-          tags: const ['design-system'],
-          estimate: '1.5h',
-          progress: 100,
-          createdAt: _d(2026, 6, 24),
-        ),
-        TaskModel(
-          id: 't8',
-          title: 'Call mum',
-          description: 'Weekly catch-up call.',
-          category: TaskCategory.personal,
-          priority: TaskPriority.medium,
-          status: TaskStatus.completed,
-          due: _d(2026, 6, 30),
-          tags: const ['family'],
-          estimate: '20m',
-          progress: 100,
-          favorite: true,
-          createdAt: _d(2026, 6, 30),
-        ),
-        TaskModel(
-          id: 't9',
-          title: 'Yoga & stretching session',
-          description: 'Focus on hips and shoulders.',
-          category: TaskCategory.health,
-          priority: TaskPriority.low,
-          status: TaskStatus.pending,
-          due: _d(2026, 7, 2),
-          tags: const ['fitness', 'recovery'],
-          estimate: '25m',
-          createdAt: _d(2026, 7, 1),
-        ),
-        TaskModel(
-          id: 't10',
-          title: 'Refactor auth service tests',
-          description: 'Increase coverage on token refresh edge cases.',
-          category: TaskCategory.work,
-          priority: TaskPriority.medium,
-          status: TaskStatus.overdue,
-          due: _d(2026, 6, 28),
-          tags: const ['engineering'],
-          estimate: '2h',
-          progress: 40,
-          createdAt: _d(2026, 6, 22),
-        ),
-        TaskModel(
-          id: 't11',
-          title: 'Plan Japan itinerary — Kyoto leg',
-          description: 'Map temples, ryokan stay, and food spots for the 4-day Kyoto stretch.',
-          category: TaskCategory.personal,
-          priority: TaskPriority.medium,
-          status: TaskStatus.pending,
-          due: _d(2026, 7, 6),
-          tags: const ['travel'],
-          estimate: '1h',
-          progress: 15,
-          favorite: true,
-          createdAt: _d(2026, 6, 26),
-          dreamId: 'd3',
-        ),
-        TaskModel(
-          id: 't12',
-          title: 'Study system design — caching patterns',
-          description: 'Notes on write-through vs write-behind caches for the architect track.',
-          category: TaskCategory.learning,
-          priority: TaskPriority.high,
-          status: TaskStatus.pending,
-          due: _d(2026, 7, 5),
-          tags: const ['architecture'],
-          estimate: '1.5h',
-          progress: 30,
-          createdAt: _d(2026, 6, 27),
-          dreamId: 'd1',
         ),
       ];
 
@@ -202,8 +138,9 @@ class SeedData {
           motivation: 'Design systems that outlive trends — build the technical judgment to lead at scale.',
           target: _d(2027, 12, 31),
           progress: 42,
-          color: AppColors.indigo500,
-          relatedTaskIds: const ['t12'],
+          colorRaw: '#6366F1',
+          tasksCount: 3,
+          completedTasksCount: 1,
         ),
         DreamModel(
           id: 'd2',
@@ -212,8 +149,9 @@ class SeedData {
           motivation: 'Ship something people love and own my time. This is the long game.',
           target: _d(2028, 6, 30),
           progress: 27,
-          color: AppColors.amber500,
-          relatedTaskIds: const ['t5'],
+          colorRaw: '#F59E0B',
+          tasksCount: 4,
+          completedTasksCount: 1,
         ),
         DreamModel(
           id: 'd3',
@@ -222,8 +160,9 @@ class SeedData {
           motivation: 'Cherry blossoms in Kyoto, ramen in Osaka, quiet mornings at a ryokan.',
           target: _d(2026, 11, 15),
           progress: 58,
-          color: AppColors.sky500,
-          relatedTaskIds: const ['t11'],
+          colorRaw: '#0EA5E9',
+          tasksCount: 2,
+          completedTasksCount: 1,
         ),
         DreamModel(
           id: 'd4',
@@ -232,39 +171,32 @@ class SeedData {
           motivation: 'A calm, permanent space to build a life — and a studio corner for side projects.',
           target: _d(2029, 3, 1),
           progress: 15,
-          color: AppColors.mint500,
+          colorRaw: '#10B981',
         ),
       ];
 
-  static List<NotificationModel> notifications() => const [
-        NotificationModel(id: 'n1', title: 'Task due in 1 hour', body: '"Morning run — 5km" is due soon.', time: '10m ago', unread: true, type: NotificationType.reminder),
-        NotificationModel(id: 'n2', title: 'Streak milestone!', body: "You've hit a 12-day streak. Keep it going.", time: '3h ago', unread: true, type: NotificationType.achievement),
-        NotificationModel(id: 'n3', title: 'Dream progress updated', body: '"Travel Japan" moved to 58% complete.', time: '1d ago', type: NotificationType.dream),
-        NotificationModel(id: 'n4', title: 'Weekly summary ready', body: 'You completed 28 of 44 tasks this week.', time: '2d ago', type: NotificationType.summary),
-        NotificationModel(id: 'n5', title: 'New comment on a task', body: 'Tunde Bakare commented on "Finalize onboarding flow wireframes".', time: '2d ago', unread: true, type: NotificationType.comment),
-        NotificationModel(id: 'n6', title: 'Task overdue', body: '"Review Q3 budget spreadsheet" is now overdue.', time: '2d ago', type: NotificationType.reminder),
-        NotificationModel(id: 'n7', title: 'Badge earned: Consistency Champion', body: 'Your 30-day completion rate crossed 70%.', time: '3d ago', type: NotificationType.achievement),
-        NotificationModel(id: 'n8', title: 'System update', body: 'Magadige Task now supports Dream Board reminders.', time: '5d ago', type: NotificationType.system),
+  static List<NotificationModel> notifications() => [
+        NotificationModel(id: 'n1', title: 'Task due in 1 hour', body: '"Morning run — 5km" is due soon.', createdAt: DateTime.now().subtract(const Duration(minutes: 10)), isUnread: true, type: NotificationType.taskDue),
+        NotificationModel(id: 'n2', title: 'Streak milestone!', body: "You've hit a 12-day streak. Keep it going.", createdAt: DateTime.now().subtract(const Duration(hours: 3)), isUnread: true, type: NotificationType.streakReminder),
+        NotificationModel(id: 'n3', title: 'Dream progress updated', body: '"Travel Japan" moved to 58% complete.', createdAt: DateTime.now().subtract(const Duration(days: 1)), type: NotificationType.dreamProgress),
+        NotificationModel(id: 'n4', title: 'Badge earned: Consistency Champion', body: 'Your 30-day completion rate crossed 70%.', createdAt: DateTime.now().subtract(const Duration(days: 3)), type: NotificationType.badgeEarned),
+        NotificationModel(id: 'n5', title: 'System update', body: 'Magadige Task now supports Dream Board reminders.', createdAt: DateTime.now().subtract(const Duration(days: 5)), type: NotificationType.system),
       ];
 
-  static List<BadgeModel> badges() => [
-        BadgeModel(id: 'b1', label: '7-Day Streak', icon: Icons.local_fire_department_outlined, description: 'Complete at least one task every day for 7 days straight.', earned: true, earnedDate: _d(2026, 6, 20)),
-        BadgeModel(id: 'b2', label: 'Early Bird', icon: Icons.wb_twilight_outlined, description: 'Complete a task before 8 AM.', earned: true, earnedDate: _d(2026, 6, 15)),
-        BadgeModel(id: 'b3', label: 'Consistency Champion', icon: Icons.workspace_premium_outlined, description: 'Maintain a 30-day completion rate above 70%.', earned: true, earnedDate: _d(2026, 6, 30)),
-        BadgeModel(id: 'b4', label: '100 Tasks Done', icon: Icons.emoji_events_outlined, description: 'Complete 100 tasks total.', progress: 78),
-        BadgeModel(id: 'b5', label: 'Dream Achiever', icon: Icons.star_border_rounded, description: 'Reach 100% progress on any dream.', progress: 30),
-        BadgeModel(id: 'b6', label: 'Night Owl', icon: Icons.nightlight_outlined, description: 'Complete a task after 10 PM.', earned: true, earnedDate: _d(2026, 6, 25)),
-        BadgeModel(id: 'b7', label: 'Focus Master', icon: Icons.track_changes_outlined, description: 'Complete 20 high-priority tasks.', progress: 55),
-        BadgeModel(id: 'b8', label: 'Planner', icon: Icons.calendar_month_outlined, description: 'Schedule tasks for every day in a week.', earned: true, earnedDate: _d(2026, 6, 10)),
+  static List<BadgeModel> badges() => const [
+        BadgeModel(id: 'streak_7', label: 'Week Warrior', iconRaw: 'flame', description: 'Maintain a 7-day streak.'),
+        BadgeModel(id: 'early_bird', label: 'Early Bird', iconRaw: 'sunrise', description: 'Complete a task before 7am.'),
+        BadgeModel(id: 'streak_30', label: 'Consistency Champion', iconRaw: 'trophy', description: 'Maintain a 30-day streak.'),
+        BadgeModel(id: 'hundred_tasks', label: 'Centurion', iconRaw: 'medal', description: 'Complete 100 tasks.'),
+        BadgeModel(id: 'first_task', label: 'Getting Started', iconRaw: 'star', description: 'Complete your first task.'),
       ];
 
-  static List<ActivityModel> activity() => const [
-        ActivityModel(id: 'a1', type: 'complete', text: 'Completed "Call mum"', time: '2h ago'),
-        ActivityModel(id: 'a2', type: 'create', text: 'Added new task "Prepare investor update email"', time: '5h ago'),
-        ActivityModel(id: 'a3', type: 'dream', text: 'Progressed "Travel Japan" dream +4%', time: '1d ago'),
-        ActivityModel(id: 'a4', type: 'complete', text: 'Completed "Design system: audit color tokens"', time: '1d ago'),
-        ActivityModel(id: 'a5', type: 'badge', text: 'Earned badge "Consistency Champion"', time: '2d ago'),
-        ActivityModel(id: 'a6', type: 'overdue', text: '"Review Q3 budget spreadsheet" became overdue', time: '2d ago'),
+  static List<UserBadgeModel> userBadges() => [
+        UserBadgeModel(badge: badges()[0], earned: true, earnedDate: _d(2026, 6, 20), progress: 100),
+        UserBadgeModel(badge: badges()[1], earned: true, earnedDate: _d(2026, 6, 15), progress: 100),
+        UserBadgeModel(badge: badges()[2], earned: true, earnedDate: _d(2026, 6, 30), progress: 100),
+        UserBadgeModel(badge: badges()[3], progress: 78),
+        UserBadgeModel(badge: badges()[4], earned: true, earnedDate: _d(2026, 6, 10), progress: 100),
       ];
 
   /// Completed vs. planned tasks per weekday, for the weekly bar chart.

@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/duration_format.dart';
 import '../../../../core/widgets/gradient_button.dart';
 import '../../../../data/models/category_model.dart';
 import '../../../../data/models/task_model.dart';
+import '../../../categories/cubit/categories_cubit.dart';
 
-/// Shows the create/edit task form as a modal bottom sheet. Returns the
-/// saved [TaskModel] via the completer, or null if dismissed.
+/// Shows the create/edit task form as a modal bottom sheet. `subtaskTitles`
+/// is only ever non-empty for a brand-new task (subtasks need a real task id
+/// to attach to, so editing an existing task manages them from the Task
+/// Details screen instead, where they have real per-item persistence).
 Future<void> showTaskFormSheet(
   BuildContext context, {
   TaskModel? existing,
-  required void Function(TaskModel task, bool isNew) onSave,
+  required void Function(TaskModel task, bool isNew, List<String> subtaskTitles) onSave,
 }) {
   return showModalBottomSheet(
     context: context,
@@ -22,7 +27,7 @@ Future<void> showTaskFormSheet(
 
 class _TaskFormSheet extends StatefulWidget {
   final TaskModel? existing;
-  final void Function(TaskModel task, bool isNew) onSave;
+  final void Function(TaskModel task, bool isNew, List<String> subtaskTitles) onSave;
   const _TaskFormSheet({this.existing, required this.onSave});
 
   @override
@@ -33,9 +38,9 @@ class _TaskFormSheetState extends State<_TaskFormSheet> {
   late final TextEditingController _title;
   late final TextEditingController _description;
   late final TextEditingController _estimate;
-  late TaskCategory _category;
+  CategoryModel? _category;
   late TaskPriority _priority;
-  late DateTime _due;
+  DateTime? _due;
   final List<TextEditingController> _subtaskControllers = [];
 
   bool get isNew => widget.existing == null;
@@ -46,13 +51,10 @@ class _TaskFormSheetState extends State<_TaskFormSheet> {
     final t = widget.existing;
     _title = TextEditingController(text: t?.title ?? '');
     _description = TextEditingController(text: t?.description ?? '');
-    _estimate = TextEditingController(text: t?.estimate ?? '30m');
-    _category = t?.category ?? TaskCategory.work;
+    _estimate = TextEditingController(text: t?.estimateMinutes != null ? formatMinutes(t!.estimateMinutes) : '');
+    _category = t?.category;
     _priority = t?.priority ?? TaskPriority.medium;
     _due = t?.due ?? DateTime.now();
-    for (final s in (t?.subtasks ?? const [])) {
-      _subtaskControllers.add(TextEditingController(text: s));
-    }
   }
 
   @override
@@ -66,31 +68,35 @@ class _TaskFormSheetState extends State<_TaskFormSheet> {
     super.dispose();
   }
 
-  void _save() {
+  void _save(CategoryModel fallbackCategory) {
     if (_title.text.trim().isEmpty) return;
-    final subtasks = _subtaskControllers.map((c) => c.text.trim()).where((s) => s.isNotEmpty).toList();
+    final category = _category ?? fallbackCategory;
     final task = TaskModel(
-      id: widget.existing?.id ?? 't${DateTime.now().millisecondsSinceEpoch}',
+      id: widget.existing?.id ?? '',
       title: _title.text.trim(),
       description: _description.text.trim(),
-      category: _category,
+      category: category,
       priority: _priority,
       status: widget.existing?.status ?? TaskStatus.pending,
       due: _due,
       tags: widget.existing?.tags ?? const [],
-      estimate: _estimate.text.trim().isEmpty ? '30m' : _estimate.text.trim(),
-      progress: widget.existing?.progress ?? 0,
+      estimateMinutes: parseMinutesFromLabel(_estimate.text),
       favorite: widget.existing?.favorite ?? false,
       createdAt: widget.existing?.createdAt ?? DateTime.now(),
-      subtasks: subtasks,
+      dreamId: widget.existing?.dreamId,
     );
-    widget.onSave(task, isNew);
+    final subtaskTitles = _subtaskControllers.map((c) => c.text.trim()).where((s) => s.isNotEmpty).toList();
+    widget.onSave(task, isNew, isNew ? subtaskTitles : const []);
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    final categories = context.watch<CategoriesCubit>().state.categories;
+    final fallbackCategory = categories.isNotEmpty ? categories.first : CategoryModel.unknown;
+    final selectedCategory = _category ?? (categories.contains(widget.existing?.category) ? widget.existing?.category : null) ?? fallbackCategory;
+
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: DraggableScrollableSheet(
@@ -133,11 +139,13 @@ class _TaskFormSheetState extends State<_TaskFormSheet> {
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: DropdownButtonFormField<TaskCategory>(
-                        initialValue: _category,
+                      child: DropdownButtonFormField<CategoryModel>(
+                        initialValue: selectedCategory,
                         decoration: const InputDecoration(labelText: 'Category'),
-                        items: TaskCategory.values.map((c) => DropdownMenuItem(value: c, child: Text(c.label))).toList(),
-                        onChanged: (v) => setState(() => _category = v!),
+                        items: categories.isEmpty
+                            ? [DropdownMenuItem(value: fallbackCategory, child: Text(fallbackCategory.label))]
+                            : categories.map((c) => DropdownMenuItem(value: c, child: Text(c.label))).toList(),
+                        onChanged: (v) => setState(() => _category = v),
                       ),
                     ),
                   ],
@@ -148,12 +156,12 @@ class _TaskFormSheetState extends State<_TaskFormSheet> {
                     Expanded(
                       child: InkWell(
                         onTap: () async {
-                          final picked = await showDatePicker(context: context, initialDate: _due, firstDate: DateTime(2020), lastDate: DateTime(2100));
+                          final picked = await showDatePicker(context: context, initialDate: _due ?? DateTime.now(), firstDate: DateTime(2020), lastDate: DateTime(2100));
                           if (picked != null) setState(() => _due = picked);
                         },
                         child: InputDecorator(
                           decoration: const InputDecoration(labelText: 'Deadline'),
-                          child: Text('${_due.year}-${_due.month.toString().padLeft(2, '0')}-${_due.day.toString().padLeft(2, '0')}'),
+                          child: Text(_due == null ? 'Not set' : '${_due!.year}-${_due!.month.toString().padLeft(2, '0')}-${_due!.day.toString().padLeft(2, '0')}'),
                         ),
                       ),
                     ),
@@ -161,32 +169,34 @@ class _TaskFormSheetState extends State<_TaskFormSheet> {
                     Expanded(child: TextField(controller: _estimate, decoration: const InputDecoration(labelText: 'Estimated time', hintText: 'e.g. 1h 30m'))),
                   ],
                 ),
-                const SizedBox(height: 18),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Subtasks', style: Theme.of(context).textTheme.labelLarge),
-                    TextButton.icon(
-                      onPressed: () => setState(() => _subtaskControllers.add(TextEditingController())),
-                      icon: const Icon(Icons.add_rounded, size: 16),
-                      label: const Text('Add'),
-                    ),
-                  ],
-                ),
-                ..._subtaskControllers.asMap().entries.map((e) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        children: [
-                          Expanded(child: TextField(controller: e.value, decoration: const InputDecoration(hintText: 'Subtask title', isDense: true))),
-                          IconButton(
-                            icon: const Icon(Icons.close_rounded, size: 18),
-                            onPressed: () => setState(() => _subtaskControllers.removeAt(e.key)),
-                          ),
-                        ],
+                if (isNew) ...[
+                  const SizedBox(height: 18),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Subtasks', style: Theme.of(context).textTheme.labelLarge),
+                      TextButton.icon(
+                        onPressed: () => setState(() => _subtaskControllers.add(TextEditingController())),
+                        icon: const Icon(Icons.add_rounded, size: 16),
+                        label: const Text('Add'),
                       ),
-                    )),
+                    ],
+                  ),
+                  ..._subtaskControllers.asMap().entries.map((e) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          children: [
+                            Expanded(child: TextField(controller: e.value, decoration: const InputDecoration(hintText: 'Subtask title', isDense: true))),
+                            IconButton(
+                              icon: const Icon(Icons.close_rounded, size: 18),
+                              onPressed: () => setState(() => _subtaskControllers.removeAt(e.key)),
+                            ),
+                          ],
+                        ),
+                      )),
+                ],
                 const SizedBox(height: 12),
-                GradientButton(label: 'Save Task', onPressed: _save),
+                GradientButton(label: 'Save Task', onPressed: () => _save(fallbackCategory)),
               ],
             ),
           );

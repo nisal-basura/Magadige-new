@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../../../core/widgets/empty_state_view.dart';
 import '../../../data/models/notification_model.dart';
 import '../../../data/repositories/notification_repository.dart';
 import '../cubit/inbox_cubit.dart';
+import '../cubit/unread_count_cubit.dart';
 
 class InboxScreen extends StatelessWidget {
   const InboxScreen({super.key});
@@ -14,7 +16,7 @@ class InboxScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => InboxCubit(context.read<NotificationRepository>()),
+      create: (context) => InboxCubit(context.read<NotificationRepository>(), context.read<UnreadCountCubit>()),
       child: const _InboxView(),
     );
   }
@@ -47,9 +49,9 @@ class _InboxView extends StatelessWidget {
                     children: [
                       _filterChip(context, 'All', InboxFilter.all, state.filter, cubit),
                       _filterChip(context, 'Unread', InboxFilter.unread, state.filter, cubit),
-                      _filterChip(context, 'Reminders', InboxFilter.reminder, state.filter, cubit),
-                      _filterChip(context, 'Achievements', InboxFilter.achievement, state.filter, cubit),
-                      _filterChip(context, 'Dreams', InboxFilter.dream, state.filter, cubit),
+                      _filterChip(context, 'Reminders', InboxFilter.taskDue, state.filter, cubit),
+                      _filterChip(context, 'Achievements', InboxFilter.badgeEarned, state.filter, cubit),
+                      _filterChip(context, 'Dreams', InboxFilter.dreamProgress, state.filter, cubit),
                       _filterChip(context, 'System', InboxFilter.system, state.filter, cubit),
                     ],
                   ),
@@ -118,13 +120,13 @@ class _NotificationTile extends StatelessWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         margin: const EdgeInsets.only(bottom: 10),
-        decoration: BoxDecoration(color: const Color(0xFFEE4F4F), borderRadius: BorderRadius.circular(16)),
+        decoration: BoxDecoration(color: AppColors.coral600, borderRadius: BorderRadius.circular(16)),
         child: const Icon(Icons.delete_outline_rounded, color: Colors.white),
       ),
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-          color: n.unread ? p.brandSoft : p.bgSurface,
+          color: n.isUnread ? p.brandSoft : p.bgSurface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: p.borderSubtle),
         ),

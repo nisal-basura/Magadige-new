@@ -5,6 +5,7 @@ import '../../../core/utils/form_status.dart';
 import '../../../data/models/category_model.dart';
 import '../../../data/models/task_model.dart';
 import '../../../data/repositories/task_repository.dart';
+import '../../categories/cubit/categories_cubit.dart';
 
 class CalendarState extends Equatable {
   final FormStatus status;
@@ -38,15 +39,20 @@ class CalendarState extends Equatable {
 
 class CalendarCubit extends Cubit<CalendarState> {
   final TaskRepository _repository;
+  final CategoriesCubit _categoriesCubit;
 
-  CalendarCubit(this._repository) : super(CalendarState()) {
+  CalendarCubit(this._repository, this._categoriesCubit) : super(CalendarState()) {
     load();
   }
 
   Future<void> load() async {
     emit(state.copyWith(status: FormStatus.submitting));
-    final tasks = await _repository.fetchTasks();
-    emit(state.copyWith(status: FormStatus.success, tasks: tasks));
+    try {
+      final tasks = await _repository.fetchTasks();
+      emit(state.copyWith(status: FormStatus.success, tasks: tasks));
+    } catch (_) {
+      emit(state.copyWith(status: FormStatus.failure));
+    }
   }
 
   void selectDate(DateTime date) => emit(state.copyWith(selectedDate: date));
@@ -62,26 +68,28 @@ class CalendarCubit extends Cubit<CalendarState> {
   }
 
   Future<void> toggleComplete(TaskModel task) async {
-    final updated = task.copyWith(
-      status: task.status == TaskStatus.completed ? TaskStatus.pending : TaskStatus.completed,
-      progress: task.status == TaskStatus.completed ? 40 : 100,
-    );
-    await _repository.updateTask(updated);
-    emit(state.copyWith(tasks: state.tasks.map((t) => t.id == task.id ? updated : t).toList()));
+    final newStatus = task.status == TaskStatus.completed ? TaskStatus.pending : TaskStatus.completed;
+    final updated = await _repository.setStatus(task.id, newStatus);
+    final merged = updated.mergeInto(task);
+    emit(state.copyWith(tasks: state.tasks.map((t) => t.id == task.id ? merged : t).toList()));
   }
 
   Future<void> quickAddTask(String title) async {
     if (title.trim().isEmpty) return;
+    final categories = _categoriesCubit.state.categories;
+    final category = state.tasks.isNotEmpty
+        ? state.tasks.first.category
+        : (categories.isNotEmpty ? categories.first : CategoryModel.unknown);
     final task = TaskModel(
-      id: 't${DateTime.now().millisecondsSinceEpoch}',
+      id: '',
       title: title.trim(),
-      category: TaskCategory.work,
+      category: category,
       priority: TaskPriority.medium,
       status: TaskStatus.pending,
       due: state.selectedDate,
       createdAt: DateTime.now(),
     );
-    await _repository.createTask(task);
-    emit(state.copyWith(tasks: [task, ...state.tasks]));
+    final created = await _repository.createTask(task);
+    emit(state.copyWith(tasks: [created, ...state.tasks]));
   }
 }

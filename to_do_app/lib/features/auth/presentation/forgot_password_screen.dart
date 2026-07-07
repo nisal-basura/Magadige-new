@@ -74,7 +74,7 @@ class _ForgotPasswordView extends StatelessWidget {
                         width: active ? 22 : 8,
                         height: 8,
                         decoration: BoxDecoration(
-                          color: done || active ? (done ? const Color(0xFF22C58B) : p.brand) : p.borderStrong,
+                          color: done || active ? (done ? AppColors.mint500 : p.brand) : p.borderStrong,
                           borderRadius: BorderRadius.circular(999),
                         ),
                       );
@@ -82,7 +82,7 @@ class _ForgotPasswordView extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   if (state.step == 1) _EmailStep(cubit: cubit, state: state, palette: p),
-                  if (state.step == 2) _OtpStep(cubit: cubit, state: state, palette: p),
+                  if (state.step == 2) _TokenStep(cubit: cubit, state: state, palette: p),
                   if (state.step == 3) _ResetStep(cubit: cubit, state: state),
                   const SizedBox(height: 20),
                   Center(
@@ -138,7 +138,7 @@ class _EmailStep extends StatelessWidget {
         const _MiniIcon(Icons.mail_outline_rounded),
         Text('Forgot your password?', style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: 6),
-        Text("No worries. Enter your email and we'll send a 4-digit code to reset it.",
+        Text("No worries. Enter your email and we'll send you a reset link with a token.",
             style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(height: 22),
         TextField(
@@ -147,17 +147,17 @@ class _EmailStep extends StatelessWidget {
           decoration: const InputDecoration(labelText: 'Email address', hintText: 'you@example.com', prefixIcon: Icon(Icons.mail_outline_rounded, size: 20)),
         ),
         const SizedBox(height: 20),
-        GradientButton(label: 'Send reset code', loading: state.status == FormStatus.submitting, onPressed: cubit.submitEmail),
+        GradientButton(label: 'Send reset email', loading: state.status == FormStatus.submitting, onPressed: cubit.submitEmail),
       ],
     );
   }
 }
 
-class _OtpStep extends StatelessWidget {
+class _TokenStep extends StatelessWidget {
   final ForgotPasswordCubit cubit;
   final ForgotPasswordState state;
   final AppPalette palette;
-  const _OtpStep({required this.cubit, required this.state, required this.palette});
+  const _TokenStep({required this.cubit, required this.state, required this.palette});
 
   @override
   Widget build(BuildContext context) {
@@ -165,45 +165,27 @@ class _OtpStep extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _MiniIcon(Icons.shield_outlined),
-        Text('Enter verification code', style: Theme.of(context).textTheme.headlineMedium),
+        Text('Enter your reset token', style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: 6),
         RichText(
           text: TextSpan(
             style: Theme.of(context).textTheme.bodyMedium,
             children: [
-              const TextSpan(text: 'We sent a 4-digit code to '),
+              const TextSpan(text: "If an account exists for "),
               TextSpan(text: state.email.isEmpty ? 'your email' : state.email, style: const TextStyle(fontWeight: FontWeight.w700)),
-              const TextSpan(text: '. It expires in 5 minutes.'),
+              const TextSpan(text: ', we sent a reset link with a token — paste it below.'),
             ],
           ),
         ),
         const SizedBox(height: 22),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List.generate(4, (i) {
-            return SizedBox(
-              width: 60,
-              height: 64,
-              child: TextField(
-                maxLength: 1,
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-                decoration: const InputDecoration(counterText: ''),
-                onChanged: (v) {
-                  final chars = state.otp.padRight(4).split('');
-                  chars[i] = v.isEmpty ? ' ' : v;
-                  cubit.otpChanged(chars.join().trim());
-                  if (v.isNotEmpty && i < 3) FocusScope.of(context).nextFocus();
-                },
-              ),
-            );
-          }),
+        TextField(
+          onChanged: cubit.tokenChanged,
+          decoration: const InputDecoration(labelText: 'Reset token', hintText: 'Paste the token from your email', prefixIcon: Icon(Icons.key_outlined, size: 20)),
         ),
         const SizedBox(height: 8),
-        TextButton(onPressed: cubit.submitEmail, child: const Text("Didn't get a code? Resend")),
+        TextButton(onPressed: cubit.submitEmail, child: const Text("Didn't get an email? Resend")),
         const SizedBox(height: 14),
-        GradientButton(label: 'Verify code', loading: state.status == FormStatus.submitting, onPressed: cubit.submitOtp),
+        GradientButton(label: 'Continue', loading: state.status == FormStatus.submitting, onPressed: cubit.submitToken),
       ],
     );
   }
@@ -229,7 +211,7 @@ class _ResetStepState extends State<_ResetStep> {
         const _MiniIcon(Icons.lock_outline_rounded),
         Text('Set a new password', style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: 6),
-        Text('Make it strong — at least 6 characters.', style: Theme.of(context).textTheme.bodyMedium),
+        Text('Make it strong — at least 8 characters.', style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(height: 22),
         TextField(
           onChanged: widget.cubit.newPasswordChanged,

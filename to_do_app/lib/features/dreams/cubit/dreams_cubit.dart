@@ -14,7 +14,7 @@ class DreamsState extends Equatable {
 
   const DreamsState({this.status = FormStatus.initial, this.dreams = const [], this.tasks = const []});
 
-  List<TaskModel> relatedTasks(DreamModel dream) => tasks.where((t) => dream.relatedTaskIds.contains(t.id)).toList();
+  List<TaskModel> relatedTasks(DreamModel dream) => tasks.where((t) => t.dreamId == dream.id).toList();
 
   DreamsState copyWith({FormStatus? status, List<DreamModel>? dreams, List<TaskModel>? tasks}) {
     return DreamsState(status: status ?? this.status, dreams: dreams ?? this.dreams, tasks: tasks ?? this.tasks);
@@ -34,19 +34,17 @@ class DreamsCubit extends Cubit<DreamsState> {
 
   Future<void> load() async {
     emit(state.copyWith(status: FormStatus.submitting));
-    final results = await Future.wait([_dreamRepository.fetchDreams(), _taskRepository.fetchTasks()]);
-    emit(state.copyWith(status: FormStatus.success, dreams: results[0] as List<DreamModel>, tasks: results[1] as List<TaskModel>));
+    try {
+      final results = await Future.wait([_dreamRepository.fetchDreams(), _taskRepository.fetchTasks()]);
+      emit(state.copyWith(status: FormStatus.success, dreams: results[0] as List<DreamModel>, tasks: results[1] as List<TaskModel>));
+    } catch (_) {
+      emit(state.copyWith(status: FormStatus.failure));
+    }
   }
 
   Future<void> addDream(DreamModel dream) async {
-    await _dreamRepository.createDream(dream);
-    emit(state.copyWith(dreams: [...state.dreams, dream]));
-  }
-
-  Future<void> bumpProgress(DreamModel dream, {int by = 10}) async {
-    final updated = dream.copyWith(progress: (dream.progress + by).clamp(0, 100));
-    await _dreamRepository.updateDream(updated);
-    emit(state.copyWith(dreams: state.dreams.map((d) => d.id == updated.id ? updated : d).toList()));
+    final created = await _dreamRepository.createDream(dream);
+    emit(state.copyWith(dreams: [...state.dreams, created]));
   }
 
   Future<void> deleteDream(DreamModel dream) async {

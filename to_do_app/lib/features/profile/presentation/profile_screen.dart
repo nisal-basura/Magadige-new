@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../../../core/widgets/avatar_initials.dart';
@@ -50,7 +51,8 @@ class _ProfileView extends StatelessWidget {
                     AvatarInitials(initials: user.avatarInitials, size: 72),
                     const SizedBox(height: 12),
                     Text(user.name, style: Theme.of(context).textTheme.headlineSmall),
-                    Text(user.role, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+                    if (user.headline != null)
+                      Text(user.headline!, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
                     const SizedBox(height: 8),
                     Wrap(
                       alignment: WrapAlignment.center,
@@ -81,8 +83,8 @@ class _ProfileView extends StatelessWidget {
                 crossAxisSpacing: 12,
                 childAspectRatio: 1.6,
                 children: [
-                  _statCard(context, Icons.check_rounded, '${state.completedTasks}', 'Tasks Completed', const Color(0xFF16A374)),
-                  _statCard(context, Icons.local_fire_department_outlined, '${user.streakCurrent}d', 'Current Streak', const Color(0xFFEE4F4F)),
+                  _statCard(context, Icons.check_rounded, '${state.completedTasks}', 'Tasks Completed', AppColors.mint600),
+                  _statCard(context, Icons.local_fire_department_outlined, '${user.streakCurrent}d', 'Current Streak', AppColors.coral600),
                   _statCard(context, Icons.emoji_events_outlined, '${user.streakLongest}d', 'Longest Streak', p.accent),
                   _statCard(context, Icons.star_border_rounded, '${state.dreamsInMotion}', 'Dreams in Motion', p.brand),
                 ],
@@ -137,9 +139,9 @@ class _ProfileView extends StatelessWidget {
                           opacity: b.earned ? 1 : 0.35,
                           child: Column(
                             children: [
-                              Container(width: 40, height: 40, decoration: BoxDecoration(color: p.brandSoft, shape: BoxShape.circle), child: Icon(b.icon, size: 18, color: p.brandStrong)),
+                              Container(width: 40, height: 40, decoration: BoxDecoration(color: p.brandSoft, shape: BoxShape.circle), child: Icon(b.badge.icon, size: 18, color: p.brandStrong)),
                               const SizedBox(height: 4),
-                              Text(b.label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w700), maxLines: 2),
+                              Text(b.badge.label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w700), maxLines: 2),
                             ],
                           ),
                         );
@@ -233,8 +235,8 @@ class _ProfileView extends StatelessWidget {
         if (connected)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(color: const Color(0xFFE3F9EF), borderRadius: BorderRadius.circular(999)),
-            child: const Text('Connected', style: TextStyle(color: Color(0xFF16A374), fontWeight: FontWeight.w700, fontSize: 11)),
+            decoration: BoxDecoration(color: AppColors.mintSoft, borderRadius: BorderRadius.circular(999)),
+            child: const Text('Connected', style: TextStyle(color: AppColors.mint600, fontWeight: FontWeight.w700, fontSize: 11)),
           )
         else
           OutlinedButton(onPressed: () {}, child: const Text('Connect')),

@@ -10,8 +10,45 @@
   width: 56px; height: 56px; border-radius: var(--r-lg); flex-shrink: 0;
   background: var(--hero-gradient); color: #fff; display: grid; place-content: center;
   box-shadow: var(--shadow-glow);
+  transition: background 0.6s ease, box-shadow 0.6s ease;
 }
-.greeting-icon svg { width: 26px; height: 26px; }
+.greeting-icon svg { width: 26px; height: 26px; position: relative; z-index: 1; }
+
+/* ---- Ambient time-of-day glow ----------------------------------------------
+   Purely decorative: follows the existing [data-period] attribute that
+   theme.js already sets on <html>, so it stays in sync with the real toggle
+   without adding any new state of its own. */
+html[data-period="morning"] .greeting-icon {
+  background: radial-gradient(circle at 35% 30%, #fff5df 0%, #ffdb8a 35%, #fa8f0f 75%, #dd6c08 100%);
+  box-shadow: 0 0 0 1px hsl(var(--shadow-color) / 0.04), 0 0 20px 4px rgba(255, 171, 41, 0.55), 0 0 46px 10px rgba(250, 143, 15, 0.3);
+  animation: greeting-glow-pulse 4.5s ease-in-out infinite;
+}
+html[data-period="afternoon"] .greeting-icon {
+  background: radial-gradient(circle at 35% 30%, #fffdf5 0%, #ffedc2 30%, #ffab29 70%, #fa8f0f 100%);
+  box-shadow: 0 0 0 1px hsl(var(--shadow-color) / 0.04), 0 0 20px 4px rgba(255, 219, 138, 0.6), 0 0 46px 10px rgba(255, 171, 41, 0.32);
+  animation: greeting-glow-pulse 4s ease-in-out infinite;
+}
+html[data-period="evening"] .greeting-icon {
+  background: radial-gradient(circle at 35% 30%, #ffe6c2 0%, #ffab29 30%, #dd6c08 65%, #93390f 100%);
+  box-shadow: 0 0 0 1px hsl(var(--shadow-color) / 0.04), 0 0 22px 5px rgba(221, 108, 8, 0.55), 0 0 50px 12px rgba(147, 57, 15, 0.3);
+  animation: greeting-glow-pulse 5s ease-in-out infinite;
+}
+html[data-period="night"] .greeting-icon {
+  background: radial-gradient(circle at 35% 30%, #f0f6ff 0%, #c9c0ff 35%, #6c4eff 75%, #4527c2 100%);
+  box-shadow: 0 0 0 1px hsl(var(--shadow-color) / 0.04), 0 0 20px 4px rgba(140, 170, 255, 0.5), 0 0 46px 12px rgba(69, 39, 194, 0.3);
+  animation: greeting-glow-float 6s ease-in-out infinite;
+}
+@keyframes greeting-glow-pulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.12); }
+}
+@keyframes greeting-glow-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .greeting-icon { animation: none !important; }
+}
 .greeting-title { font-size: var(--fs-2xl); margin-bottom: 2px; }
 .greeting-sub { font-size: var(--fs-xs); display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
 .greeting-sub span { display: inline-flex; align-items: center; gap: 5px; }

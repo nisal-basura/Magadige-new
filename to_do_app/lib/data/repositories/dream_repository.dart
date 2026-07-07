@@ -1,3 +1,4 @@
+import '../../core/network/api_client.dart';
 import '../datasources/local_data_store.dart';
 import '../models/dream_model.dart';
 
@@ -9,6 +10,34 @@ abstract class DreamRepository {
   Future<DreamModel> updateDream(DreamModel dream);
 
   Future<void> deleteDream(String id);
+}
+
+class ApiDreamRepository implements DreamRepository {
+  ApiDreamRepository(this._api);
+  final ApiClient _api;
+
+  @override
+  Future<List<DreamModel>> fetchDreams() async {
+    final items = await _api.getAllPages('/dreams');
+    return items.map(DreamModel.fromJson).toList();
+  }
+
+  @override
+  Future<DreamModel> createDream(DreamModel dream) async {
+    final data = await _api.post('/dreams', data: dream.toRequestJson()) as Map<String, dynamic>;
+    return DreamModel.fromJson(data);
+  }
+
+  @override
+  Future<DreamModel> updateDream(DreamModel dream) async {
+    final data = await _api.put('/dreams/${dream.id}', data: dream.toRequestJson()) as Map<String, dynamic>;
+    return DreamModel.fromJson(data);
+  }
+
+  @override
+  Future<void> deleteDream(String id) async {
+    await _api.delete('/dreams/$id');
+  }
 }
 
 class MockDreamRepository implements DreamRepository {

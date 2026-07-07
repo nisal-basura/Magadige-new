@@ -22,7 +22,10 @@
       "Bash(node /tmp/pwtest/dream-task-test.js)",
       "Bash(node \"/c/Users/User/AppData/Local/Temp/claude/d--Magadige-new/7db06437-63b3-4acc-9179-34b743598211/scratchpad/gen-erd.js\" \"/d/Magadige new/database/magadige-er-diagram.drawio\")",
       "Bash(python3 -c ' *)",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "WebFetch(domain:avexa-fe.vercel.app)",
+      "Bash(ls /tmp/pwtest/node_modules 2>/dev/null | head -3 || echo \"no node_modules in pwtest\"; find / -maxdepth 4 -iname \"playwright\" -type d 2>/dev/null | head -5)",
+      "Read(//d//**)"
     ],
     "additionalDirectories": [
       "\\tmp\\pwtest",

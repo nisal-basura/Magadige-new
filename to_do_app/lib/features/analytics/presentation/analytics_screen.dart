@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../../../data/models/category_model.dart';
@@ -75,7 +76,7 @@ class _AnalyticsView extends StatelessWidget {
                   crossAxisSpacing: 12,
                   childAspectRatio: 1.5,
                   children: [
-                    _StatCard(icon: Icons.check_rounded, label: 'Completion Rate', value: '${state.completionRate}%', color: const Color(0xFF16A374)),
+                    _StatCard(icon: Icons.check_rounded, label: 'Completion Rate', value: '${state.completionRate}%', color: AppColors.mint600),
                     _StatCard(icon: Icons.track_changes_outlined, label: 'Avg Tasks / Day', value: state.avgTasksPerDay.toStringAsFixed(1), color: p.brand),
                     _StatCard(icon: Icons.local_fire_department_outlined, label: 'Most Productive Day', value: best.day, color: p.accent),
                     _StatCard(icon: Icons.access_time_rounded, label: 'Total Focus Time', value: '${state.totalFocusHours.toStringAsFixed(1)}h', color: p.secondary),
@@ -88,16 +89,16 @@ class _AnalyticsView extends StatelessWidget {
                   title: 'By Priority',
                   subtitle: 'Active task breakdown',
                   slices: [
-                    DonutSlice('High', priorities[TaskPriority.high] ?? 0, const Color(0xFFEE4F4F)),
-                    DonutSlice('Medium', priorities[TaskPriority.medium] ?? 0, const Color(0xFFFA8F0F)),
-                    DonutSlice('Low', priorities[TaskPriority.low] ?? 0, const Color(0xFF22C58B)),
+                    DonutSlice('High', priorities[TaskPriority.high] ?? 0, AppColors.coral600),
+                    DonutSlice('Medium', priorities[TaskPriority.medium] ?? 0, AppColors.amber500),
+                    DonutSlice('Low', priorities[TaskPriority.low] ?? 0, AppColors.mint500),
                   ],
                 ),
                 const SizedBox(height: 14),
                 DonutChartCard(
                   title: 'By Category',
                   subtitle: 'Where your effort goes',
-                  slices: TaskCategory.values.map((c) => DonutSlice(c.label, categories[c] ?? 0, c.color)).toList(),
+                  slices: categories.entries.map((e) => DonutSlice(e.key.label, e.value, e.key.color)).toList(),
                 ),
                 const SizedBox(height: 14),
                 const HeatmapGrid(),

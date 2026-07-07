@@ -1,56 +1,80 @@
 import 'package:flutter/material.dart';
 
-/// Raw brand palette — mirrors css/variables.css from the web app.
-/// Semantic (theme-aware) colors live in [AppPalette] below; always prefer
-/// those in UI code so day/night switches automatically.
+/// Raw brand palette, built from the brand swatches: Dark Russet #681702,
+/// Blaze Orange #FF6601, Burnt Sienna #DF3F13, Cosmic Latte #FFF5CB,
+/// Isabelline #F1EEEA, Deep Jungle Green #073D35. Warm ember tones (orange /
+/// russet / sienna) carry the brand + danger roles; deep jungle green
+/// carries the secondary/success role; Cosmic Latte and Isabelline anchor
+/// the light neutrals. Semantic (theme-aware) colors live in [AppPalette]
+/// below; always prefer those in UI code so day/night switches automatically.
 class AppColors {
   AppColors._();
 
-  static const indigo50 = Color(0xFFF2F0FF);
-  static const indigo100 = Color(0xFFE5E1FF);
-  static const indigo200 = Color(0xFFC9C0FF);
-  static const indigo300 = Color(0xFFA596FF);
-  static const indigo400 = Color(0xFF8570FF);
-  static const indigo500 = Color(0xFF6C4EFF);
-  static const indigo600 = Color(0xFF5936E8);
-  static const indigo700 = Color(0xFF4527C2);
+  // "indigo" — kept as the historical name for the brand ramp; values are
+  // now the warm orange/russet family instead of purple.
+  static const indigo50 = Color(0xFFFFF1E6);
+  static const indigo100 = Color(0xFFFFE0C7);
+  static const indigo200 = Color(0xFFFFC79A);
+  static const indigo300 = Color(0xFFFFA662);
+  static const indigo400 = Color(0xFFFF8433);
+  static const indigo500 = Color(0xFFFF6601); // Blaze Orange
+  static const indigo600 = Color(0xFF681702); // Dark Russet
+  static const indigo700 = Color(0xFF4A1001);
 
-  static const sky50 = Color(0xFFEEF8FF);
-  static const sky300 = Color(0xFF7DCDFF);
-  static const sky400 = Color(0xFF45B3FF);
-  static const sky500 = Color(0xFF1F97F2);
-  static const sky700 = Color(0xFF0D5FA3);
+  // "sky" — repurposed as the warm-neutral "waiting / pending" tone (no blue
+  // exists in the brand palette, so pending status reads as neutral rather
+  // than colored).
+  static const sky50 = Color(0xFFF3EFEA);
+  static const sky300 = Color(0xFFC7BBA9);
+  static const sky400 = Color(0xFFA89A85);
+  static const sky500 = Color(0xFF837663);
+  static const sky700 = Color(0xFF4C4136);
 
-  static const amber50 = Color(0xFFFFF8E8);
-  static const amber300 = Color(0xFFFFC352);
-  static const amber400 = Color(0xFFFFAB29);
-  static const amber500 = Color(0xFFFA8F0F);
-  static const amber700 = Color(0xFFB74E0A);
+  // "amber" — golden accent, kept distinct (more yellow) from the Blaze
+  // Orange brand color so favorites/premium/medium-priority still pop apart
+  // from primary actions.
+  static const amber50 = Color(0xFFFFF7E0);
+  static const amber300 = Color(0xFFFFDD8A);
+  static const amber400 = Color(0xFFFFCB57);
+  static const amber500 = Color(0xFFFFB627);
+  static const amber700 = Color(0xFFC97F0A);
 
-  static const coral500 = Color(0xFFFF6B6B);
-  static const coral600 = Color(0xFFEE4F4F);
-  static const mint500 = Color(0xFF22C58B);
-  static const mint600 = Color(0xFF16A374);
+  // "coral" — danger/overdue/high-priority, from Burnt Sienna.
+  static const coral500 = Color(0xFFDF3F13); // Burnt Sienna
+  static const coral600 = Color(0xFFB93410);
+  static const coralSoft = Color(0xFFFBE2DA);
+  static const coralSoftBorder = Color(0xFFF3C6B6);
 
-  static const gray25 = Color(0xFFFBFBFE);
-  static const gray50 = Color(0xFFF5F5FB);
-  static const gray100 = Color(0xFFEEEEF7);
-  static const gray150 = Color(0xFFE6E6F2);
-  static const gray200 = Color(0xFFDCDCE8);
-  static const gray300 = Color(0xFFC3C3D6);
-  static const gray400 = Color(0xFF9D9DB5);
-  static const gray500 = Color(0xFF7A7A95);
-  static const gray600 = Color(0xFF5D5D76);
-  static const gray700 = Color(0xFF46465C);
-  static const gray800 = Color(0xFF2E2E40);
-  static const gray900 = Color(0xFF1C1C29);
-  static const gray950 = Color(0xFF101018);
+  // "mint" — success/completed/low-priority, from Deep Jungle Green.
+  static const mint500 = Color(0xFF1C9C74);
+  static const mint600 = Color(0xFF147F5E);
+  static const mintSoft = Color(0xFFDDF2E7);
 
-  static const nightSurface = Color(0xFF191828);
-  static const nightSurface2 = Color(0xFF1F1E30);
-  static const nightSunken = Color(0xFF14131F);
-  static const nightBorder = Color(0xFF27263B);
-  static const nightBorderStrong = Color(0xFF302F47);
+  // Two brand swatches that don't fit a ramp — used directly.
+  static const cosmicLatte = Color(0xFFFFF5CB);
+  static const jungleGreen = Color(0xFF073D35);
+
+  // Warm neutral ramp (was cool blue-gray) — anchored on Isabelline.
+  static const gray25 = Color(0xFFFEFCFA);
+  static const gray50 = Color(0xFFFBF7F2);
+  static const gray100 = Color(0xFFF1EEEA); // Isabelline
+  static const gray150 = Color(0xFFE8E2D9);
+  static const gray200 = Color(0xFFDDD5C8);
+  static const gray300 = Color(0xFFC7BBA9);
+  static const gray400 = Color(0xFFA89A85);
+  static const gray500 = Color(0xFF837663);
+  static const gray600 = Color(0xFF665A4A);
+  static const gray700 = Color(0xFF4C4136);
+  static const gray800 = Color(0xFF332A22);
+  static const gray900 = Color(0xFF211A15);
+  static const gray950 = Color(0xFF150F0C);
+
+  // Night surfaces, derived from Deep Jungle Green rather than indigo.
+  static const nightSurface = Color(0xFF0E211D);
+  static const nightSurface2 = Color(0xFF122921);
+  static const nightSunken = Color(0xFF061210);
+  static const nightBorder = Color(0xFF1B342D);
+  static const nightBorderStrong = Color(0xFF24443B);
 }
 
 /// Semantic tokens that flip between day and night — the Flutter equivalent
@@ -166,45 +190,48 @@ class AppPalette extends ThemeExtension<AppPalette> {
     );
   }
 
+  /// Warm day theme — cream/Isabelline neutrals with a Blaze Orange brand.
   static const day = AppPalette(
-    bgCanvas: Color(0xFFF5F5FB),
+    bgCanvas: AppColors.gray100, // Isabelline
     bgSurface: Colors.white,
-    bgSurface2: Color(0xFFFBFBFF),
-    bgSunken: Color(0xFFF0F0F9),
+    bgSurface2: AppColors.gray50,
+    bgSunken: AppColors.gray150,
     textPrimary: AppColors.gray900,
     textSecondary: AppColors.gray600,
     textTertiary: AppColors.gray400,
     borderSubtle: AppColors.gray150,
     borderDefault: AppColors.gray200,
     borderStrong: AppColors.gray300,
-    brand: AppColors.indigo500,
-    brandStrong: AppColors.indigo600,
-    brandSoft: AppColors.indigo50,
+    brand: AppColors.indigo500, // Blaze Orange
+    brandStrong: AppColors.indigo600, // Dark Russet
+    brandSoft: AppColors.cosmicLatte,
     accent: AppColors.amber500,
     accentSoft: AppColors.amber50,
-    secondary: AppColors.sky500,
-    secondarySoft: AppColors.sky50,
-    heroGradient: [Color(0xFF6C4EFF), Color(0xFF8F6DFF), Color(0xFF45B3FF)],
+    secondary: AppColors.jungleGreen,
+    secondarySoft: AppColors.mintSoft,
+    heroGradient: [AppColors.indigo500, AppColors.coral500, AppColors.indigo600],
   );
 
+  /// Deep-forest night theme — near-black jungle green base with a lightened
+  /// ember-orange brand for contrast.
   static const night = AppPalette(
-    bgCanvas: Color(0xFF100F1C),
+    bgCanvas: Color(0xFF081613),
     bgSurface: AppColors.nightSurface,
     bgSurface2: AppColors.nightSurface2,
     bgSunken: AppColors.nightSunken,
-    textPrimary: Color(0xFFF2F1FB),
-    textSecondary: Color(0xFFA9A8C4),
-    textTertiary: Color(0xFF706F8D),
+    textPrimary: AppColors.gray100, // Isabelline
+    textSecondary: Color(0xFFC9BFAE),
+    textTertiary: Color(0xFF8C8172),
     borderSubtle: AppColors.nightBorder,
     borderDefault: AppColors.nightBorderStrong,
-    borderStrong: Color(0xFF423F61),
+    borderStrong: Color(0xFF2F5245),
     brand: AppColors.indigo400,
     brandStrong: AppColors.indigo300,
-    brandSoft: Color(0xFF241F42),
+    brandSoft: Color(0xFF3A2313),
     accent: AppColors.amber400,
-    accentSoft: Color(0xFF382A12),
-    secondary: AppColors.sky400,
-    secondarySoft: Color(0xFF16283F),
-    heroGradient: [Color(0xFF4527C2), Color(0xFF6C4EFF), Color(0xFF1078CC)],
+    accentSoft: Color(0xFF3B2C10),
+    secondary: Color(0xFF2FA88C),
+    secondarySoft: Color(0xFF16332B),
+    heroGradient: [AppColors.indigo400, Color(0xFFE2531F), AppColors.indigo600],
   );
 }

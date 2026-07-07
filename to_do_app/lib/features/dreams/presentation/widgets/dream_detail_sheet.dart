@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/app_progress_bar.dart';
 import '../../../../core/widgets/priority_dot.dart';
@@ -11,7 +12,6 @@ Future<void> showDreamDetailSheet(
   BuildContext context, {
   required DreamModel dream,
   required List<TaskModel> relatedTasks,
-  required VoidCallback onBumpProgress,
   required VoidCallback onDelete,
 }) {
   return showModalBottomSheet(
@@ -46,7 +46,9 @@ Future<void> showDreamDetailSheet(
                     children: [
                       Text(dream.title, style: Theme.of(context).textTheme.headlineSmall),
                       Text(
-                        'Target: ${DateFormat('MMM d, y').format(dream.target)} · ${daysLeft > 0 ? "$daysLeft days left" : "passed"}',
+                        dream.target == null
+                            ? 'No target date set'
+                            : 'Target: ${DateFormat('MMM d, y').format(dream.target!)} · ${(daysLeft ?? 0) > 0 ? "$daysLeft days left" : "passed"}',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
@@ -85,17 +87,7 @@ Future<void> showDreamDetailSheet(
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () {
-                      onBumpProgress();
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('+10% Progress'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(foregroundColor: const Color(0xFFEE4F4F), side: const BorderSide(color: Color(0xFFEE4F4F))),
+                    style: OutlinedButton.styleFrom(foregroundColor: AppColors.coral600, side: const BorderSide(color: AppColors.coral600)),
                     onPressed: () {
                       onDelete();
                       Navigator.of(context).pop();

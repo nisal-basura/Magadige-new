@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/auth/session_cubit.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/form_status.dart';
 import '../../../core/widgets/gradient_button.dart';
@@ -15,7 +17,7 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RegisterCubit(context.read<AuthRepository>()),
+      create: (context) => RegisterCubit(context.read<AuthRepository>(), context.read<SessionCubit>()),
       child: const _RegisterView(),
     );
   }
@@ -27,7 +29,7 @@ class _RegisterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
-    final strengthColors = [p.borderDefault, const Color(0xFFFF6B6B), const Color(0xFFFA8F0F), const Color(0xFF22C58B), const Color(0xFF16A374)];
+    final strengthColors = [p.borderDefault, AppColors.coral500, AppColors.amber500, AppColors.mint500, AppColors.mint600];
 
     return Scaffold(
       body: BlocConsumer<RegisterCubit, RegisterState>(
@@ -188,24 +190,6 @@ class _RegisterView extends StatelessWidget {
                     label: 'Create account',
                     loading: state.status == FormStatus.submitting,
                     onPressed: cubit.submit,
-                  ),
-                  const SizedBox(height: 20),
-                  Row(children: [
-                    Expanded(child: Divider(color: p.borderSubtle)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text('OR SIGN UP WITH', style: Theme.of(context).textTheme.labelSmall),
-                    ),
-                    Expanded(child: Divider(color: p.borderSubtle)),
-                  ]),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: () => context.go('/dashboard'),
-                      icon: const Icon(Icons.g_mobiledata_rounded, size: 22),
-                      label: const Text('Continue with Google'),
-                    ),
                   ),
                   const SizedBox(height: 20),
                   Center(

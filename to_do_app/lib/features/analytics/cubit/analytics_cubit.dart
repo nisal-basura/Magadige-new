@@ -62,14 +62,8 @@ class AnalyticsState extends Equatable {
   }
 
   double get totalFocusHours {
-    double total = 0;
-    for (final t in tasks) {
-      final hMatch = RegExp(r'([\d.]+)h').firstMatch(t.estimate);
-      final mMatch = RegExp(r'([\d.]+)m').firstMatch(t.estimate);
-      if (hMatch != null) total += double.parse(hMatch.group(1)!);
-      if (mMatch != null) total += double.parse(mMatch.group(1)!) / 60;
-    }
-    return total;
+    final totalMinutes = tasks.fold<int>(0, (sum, t) => sum + (t.estimateMinutes ?? 0));
+    return totalMinutes / 60;
   }
 
   Map<TaskPriority, int> get priorityBreakdown {
@@ -80,12 +74,17 @@ class AnalyticsState extends Equatable {
     return map;
   }
 
-  Map<TaskCategory, int> get categoryBreakdown {
-    final map = {for (final c in TaskCategory.values) c: 0};
+  /// Keyed by the categories actually present on the loaded tasks — each
+  /// task already carries its full [CategoryModel], so no separate catalog
+  /// lookup is needed here.
+  Map<CategoryModel, int> get categoryBreakdown {
+    final counts = <String, int>{};
+    final byId = <String, CategoryModel>{};
     for (final t in tasks) {
-      map[t.category] = (map[t.category] ?? 0) + 1;
+      byId[t.category.id] = t.category;
+      counts[t.category.id] = (counts[t.category.id] ?? 0) + 1;
     }
-    return map;
+    return {for (final id in counts.keys) byId[id]!: counts[id]!};
   }
 
   AnalyticsState copyWith({FormStatus? status, List<TaskModel>? tasks, int? streakCurrent, int? streakLongest, AnalyticsRange? range}) {
@@ -112,9 +111,13 @@ class AnalyticsCubit extends Cubit<AnalyticsState> {
 
   Future<void> load() async {
     emit(state.copyWith(status: FormStatus.submitting));
-    final tasks = await _taskRepository.fetchTasks();
-    final user = await _userRepository.getCurrentUser();
-    emit(state.copyWith(status: FormStatus.success, tasks: tasks, streakCurrent: user.streakCurrent, streakLongest: user.streakLongest));
+    try {
+      final tasks = await _taskRepository.fetchTasks();
+      final user = await _userRepository.getCurrentUser();
+      emit(state.copyWith(status: FormStatus.success, tasks: tasks, streakCurrent: user.streakCurrent, streakLongest: user.streakLongest));
+    } catch (_) {
+      emit(state.copyWith(status: FormStatus.failure));
+    }
   }
 
   void setRange(AnalyticsRange r) => emit(state.copyWith(range: r));

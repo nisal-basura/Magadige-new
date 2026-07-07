@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/color_parser.dart';
 import '../../../../core/widgets/gradient_button.dart';
 import '../../../../data/models/dream_model.dart';
 
@@ -42,12 +43,12 @@ class _AddDreamSheetState extends State<_AddDreamSheet> {
   void _save() {
     if (_title.text.trim().isEmpty) return;
     widget.onSave(DreamModel(
-      id: 'd${DateTime.now().millisecondsSinceEpoch}',
+      id: '',
       title: _title.text.trim(),
       emoji: _emoji,
       motivation: _motivation.text.trim().isEmpty ? 'A goal worth working toward.' : _motivation.text.trim(),
       target: _target,
-      color: _color,
+      colorRaw: colorToHex(_color),
     ));
     Navigator.of(context).pop();
   }

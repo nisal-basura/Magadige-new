@@ -64,8 +64,8 @@ class DreamCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(daysLeft > 0 ? '$daysLeft days left' : 'Target date passed', style: Theme.of(context).textTheme.bodySmall),
-                    Text('Target: ${DateFormat('MMM y').format(dream.target)}', style: Theme.of(context).textTheme.bodySmall),
+                    Text(daysLeft == null ? 'No target set' : (daysLeft > 0 ? '$daysLeft days left' : 'Target date passed'), style: Theme.of(context).textTheme.bodySmall),
+                    if (dream.target != null) Text('Target: ${DateFormat('MMM y').format(dream.target!)}', style: Theme.of(context).textTheme.bodySmall),
                   ],
                 ),
               ),

@@ -29,9 +29,9 @@ class StatTilesRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stats = [
-      _StatDef('Completed', completed, Icons.check_rounded, AppColors.mint600, const Color(0xFFE3F9EF)),
+      _StatDef('Completed', completed, Icons.check_rounded, AppColors.mint600, AppColors.mintSoft),
       _StatDef('Pending', pending, Icons.access_time_rounded, AppColors.sky700, AppColors.sky50),
-      _StatDef('Overdue', overdue, Icons.local_fire_department_outlined, AppColors.coral600, const Color(0xFFFFE9E9)),
+      _StatDef('Overdue', overdue, Icons.local_fire_department_outlined, AppColors.coral600, AppColors.coralSoft),
       _StatDef('High Priority', highPriority, Icons.track_changes_outlined, AppColors.amber700, AppColors.amber50),
     ];
 

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/auth/session_cubit.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/avatar_initials.dart';
-import '../../../data/datasources/local_data_store.dart';
+import '../../../data/repositories/auth_repository.dart';
 
 class _NavItem {
   final String label;
@@ -38,7 +40,8 @@ class AppDrawer extends StatelessWidget {
     final p = context.palette;
     final theme = Theme.of(context);
     final currentRoute = GoRouterState.of(context).matchedLocation;
-    final user = LocalDataStore.instance.user;
+    final user = context.watch<SessionCubit>().state.user;
+    if (user == null) return const SizedBox.shrink();
 
     Widget navTile(_NavItem item) {
       final active = currentRoute == item.route;
@@ -190,9 +193,10 @@ class AppDrawer extends StatelessWidget {
                   IconButton(
                     tooltip: 'Sign out',
                     icon: Icon(Icons.logout_rounded, size: 20, color: p.textTertiary),
-                    onPressed: () {
+                    onPressed: () async {
                       Navigator.of(context).pop();
-                      context.go('/login');
+                      await context.read<AuthRepository>().logout();
+                      if (context.mounted) context.read<SessionCubit>().setUnauthenticated();
                     },
                   ),
                 ],

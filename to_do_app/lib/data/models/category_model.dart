@@ -1,49 +1,36 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/utils/color_parser.dart';
+import '../../core/utils/icon_mapper.dart';
 
-/// Task category — mirrors CATEGORIES in data.js.
-enum TaskCategory {
-  work,
-  personal,
-  health,
-  learning,
-  finance;
+/// Task category — a dynamic, DB-backed catalog on the real backend
+/// (`GET /categories`), not a fixed set. `color`/`icon` are free-form
+/// strings server-side, parsed defensively here.
+class CategoryModel extends Equatable {
+  final String id;
+  final String label;
+  final String colorRaw;
+  final String iconRaw;
 
-  String get label => switch (this) {
-        TaskCategory.work => 'Work',
-        TaskCategory.personal => 'Personal',
-        TaskCategory.health => 'Health',
-        TaskCategory.learning => 'Learning',
-        TaskCategory.finance => 'Finance',
-      };
+  const CategoryModel({required this.id, required this.label, required this.colorRaw, required this.iconRaw});
 
-  IconData get icon => switch (this) {
-        TaskCategory.work => Icons.work_outline_rounded,
-        TaskCategory.personal => Icons.person_outline_rounded,
-        TaskCategory.health => Icons.favorite_outline_rounded,
-        TaskCategory.learning => Icons.menu_book_outlined,
-        TaskCategory.finance => Icons.account_balance_wallet_outlined,
-      };
+  Color get color => colorFromHex(colorRaw);
+  Color get softColor => color.withValues(alpha: 0.14);
+  IconData get icon => iconForName(iconRaw);
 
-  Color get color => switch (this) {
-        TaskCategory.work => AppColors.indigo500,
-        TaskCategory.personal => AppColors.sky500,
-        TaskCategory.health => AppColors.mint500,
-        TaskCategory.learning => AppColors.amber500,
-        TaskCategory.finance => AppColors.gray500,
-      };
+  static const unknown = CategoryModel(id: '', label: 'Uncategorized', colorRaw: '#9CA3AF', iconRaw: '');
 
-  Color get softColor => switch (this) {
-        TaskCategory.work => AppColors.indigo50,
-        TaskCategory.personal => AppColors.sky50,
-        TaskCategory.health => const Color(0xFFE3F9EF),
-        TaskCategory.learning => AppColors.amber50,
-        TaskCategory.finance => AppColors.gray100,
-      };
+  factory CategoryModel.fromJson(Map<String, dynamic> json) => CategoryModel(
+        id: json['id'] as String,
+        label: json['label'] as String,
+        colorRaw: json['color'] as String? ?? '',
+        iconRaw: json['icon'] as String? ?? '',
+      );
 
-  static TaskCategory fromName(String name) =>
-      TaskCategory.values.firstWhere((c) => c.name == name, orElse: () => TaskCategory.work);
+  @override
+  List<Object?> get props => [id, label, colorRaw, iconRaw];
 }
 
 enum TaskPriority {
@@ -63,8 +50,10 @@ enum TaskPriority {
         TaskPriority.high => AppColors.coral500,
       };
 
-  static TaskPriority fromName(String name) =>
-      TaskPriority.values.firstWhere((p) => p.name == name, orElse: () => TaskPriority.medium);
+  String get apiValue => name;
+
+  static TaskPriority fromApi(String? value) =>
+      TaskPriority.values.firstWhere((p) => p.name == value, orElse: () => TaskPriority.medium);
 }
 
 enum TaskStatus {
@@ -87,6 +76,66 @@ enum TaskStatus {
         TaskStatus.overdue => AppColors.coral500,
       };
 
-  static TaskStatus fromName(String name) =>
-      TaskStatus.values.firstWhere((s) => s.name == name, orElse: () => TaskStatus.pending);
+  /// The backend's literal value is hyphenated (`in-progress`) so it can't
+  /// be a bare Dart identifier — map explicitly rather than relying on `.name`.
+  String get apiValue => switch (this) {
+        TaskStatus.pending => 'pending',
+        TaskStatus.inProgress => 'in-progress',
+        TaskStatus.completed => 'completed',
+        TaskStatus.overdue => 'overdue',
+      };
+
+  static TaskStatus fromApi(String? value) => switch (value) {
+        'in-progress' => TaskStatus.inProgress,
+        'completed' => TaskStatus.completed,
+        'overdue' => TaskStatus.overdue,
+        _ => TaskStatus.pending,
+      };
+}
+
+enum ReminderOption {
+  none,
+  tenMinutes,
+  oneHour,
+  oneDay;
+
+  String get label => switch (this) {
+        ReminderOption.none => 'No reminder',
+        ReminderOption.tenMinutes => '10 minutes before',
+        ReminderOption.oneHour => '1 hour before',
+        ReminderOption.oneDay => '1 day before',
+      };
+
+  String get apiValue => switch (this) {
+        ReminderOption.none => 'none',
+        ReminderOption.tenMinutes => '10m',
+        ReminderOption.oneHour => '1h',
+        ReminderOption.oneDay => '1d',
+      };
+
+  static ReminderOption fromApi(String? value) => switch (value) {
+        '10m' => ReminderOption.tenMinutes,
+        '1h' => ReminderOption.oneHour,
+        '1d' => ReminderOption.oneDay,
+        _ => ReminderOption.none,
+      };
+}
+
+enum RepeatRule {
+  none,
+  daily,
+  weekly,
+  monthly;
+
+  String get label => switch (this) {
+        RepeatRule.none => 'Does not repeat',
+        RepeatRule.daily => 'Daily',
+        RepeatRule.weekly => 'Weekly',
+        RepeatRule.monthly => 'Monthly',
+      };
+
+  String get apiValue => name;
+
+  static RepeatRule fromApi(String? value) =>
+      RepeatRule.values.firstWhere((r) => r.name == value, orElse: () => RepeatRule.none);
 }

@@ -2,81 +2,77 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/utils/relative_time.dart';
 
 enum NotificationType {
-  reminder,
-  achievement,
-  dream,
-  summary,
-  comment,
+  taskDue,
+  badgeEarned,
+  streakReminder,
+  dreamProgress,
   system;
 
   IconData get icon => switch (this) {
-        NotificationType.reminder => Icons.notifications_none_rounded,
-        NotificationType.achievement => Icons.emoji_events_outlined,
-        NotificationType.dream => Icons.auto_awesome_outlined,
-        NotificationType.summary => Icons.bar_chart_rounded,
-        NotificationType.comment => Icons.mail_outline_rounded,
+        NotificationType.taskDue => Icons.notifications_none_rounded,
+        NotificationType.badgeEarned => Icons.emoji_events_outlined,
+        NotificationType.streakReminder => Icons.local_fire_department_outlined,
+        NotificationType.dreamProgress => Icons.auto_awesome_outlined,
         NotificationType.system => Icons.lightbulb_outline_rounded,
       };
 
   Color get color => switch (this) {
-        NotificationType.reminder => AppColors.coral500,
-        NotificationType.achievement => AppColors.amber500,
-        NotificationType.dream => AppColors.indigo500,
-        NotificationType.summary => AppColors.sky500,
-        NotificationType.comment => AppColors.sky500,
+        NotificationType.taskDue => AppColors.coral500,
+        NotificationType.badgeEarned => AppColors.amber500,
+        NotificationType.streakReminder => AppColors.coral500,
+        NotificationType.dreamProgress => AppColors.indigo500,
         NotificationType.system => AppColors.mint500,
       };
 
-  static NotificationType fromName(String name) =>
-      NotificationType.values.firstWhere((t) => t.name == name, orElse: () => NotificationType.system);
+  static NotificationType fromApi(String? value) => switch (value) {
+        'task_due' => NotificationType.taskDue,
+        'badge_earned' => NotificationType.badgeEarned,
+        'streak_reminder' => NotificationType.streakReminder,
+        'dream_progress' => NotificationType.dreamProgress,
+        _ => NotificationType.system,
+      };
 }
 
 class NotificationModel extends Equatable {
   final String id;
   final String title;
   final String body;
-  final String time;
-  final bool unread;
+  final DateTime createdAt;
+  final bool isUnread;
   final NotificationType type;
 
   const NotificationModel({
     required this.id,
     required this.title,
     required this.body,
-    required this.time,
-    this.unread = false,
+    required this.createdAt,
+    this.isUnread = false,
     required this.type,
   });
 
-  NotificationModel copyWith({bool? unread}) => NotificationModel(
+  String get time => relativeTime(createdAt);
+
+  NotificationModel copyWith({bool? isUnread}) => NotificationModel(
         id: id,
         title: title,
         body: body,
-        time: time,
-        unread: unread ?? this.unread,
+        createdAt: createdAt,
+        isUnread: isUnread ?? this.isUnread,
         type: type,
       );
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) => NotificationModel(
-        id: json['id'] as String,
+        id: json['id'].toString(),
         title: json['title'] as String,
         body: json['body'] as String,
-        time: json['time'] as String,
-        unread: json['unread'] as bool? ?? false,
-        type: NotificationType.fromName(json['type'] as String),
+        createdAt: DateTime.tryParse(json['created_at'] as String? ?? '') ?? DateTime.now(),
+        isUnread: json['is_unread'] as bool? ?? false,
+        type: NotificationType.fromApi(json['type'] as String?),
       );
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'body': body,
-        'time': time,
-        'unread': unread,
-        'type': type.name,
-      };
-
   @override
-  List<Object?> get props => [id, title, body, time, unread, type];
+  List<Object?> get props => [id, title, body, createdAt, isUnread, type];
 }

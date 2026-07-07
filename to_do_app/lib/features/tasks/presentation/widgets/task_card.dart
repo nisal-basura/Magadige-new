@@ -14,7 +14,6 @@ class TaskCard extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onToggleFavorite;
   final VoidCallback onDuplicate;
-  final VoidCallback onArchive;
   final VoidCallback onDelete;
   final bool selected;
   final ValueChanged<bool?>? onSelectChanged;
@@ -25,7 +24,6 @@ class TaskCard extends StatelessWidget {
     required this.onTap,
     required this.onToggleFavorite,
     required this.onDuplicate,
-    required this.onArchive,
     required this.onDelete,
     this.selected = false,
     this.onSelectChanged,
@@ -34,8 +32,8 @@ class TaskCard extends StatelessWidget {
   (Color, Color) _statusColors(AppPalette p) => switch (task.status) {
         TaskStatus.pending => (p.secondary, p.secondarySoft),
         TaskStatus.inProgress => (p.brand, p.brandSoft),
-        TaskStatus.completed => (const Color(0xFF16A374), const Color(0xFFE3F9EF)),
-        TaskStatus.overdue => (const Color(0xFFEE4F4F), const Color(0xFFFFE9E9)),
+        TaskStatus.completed => (AppColors.mint600, AppColors.mintSoft),
+        TaskStatus.overdue => (AppColors.coral600, AppColors.coralSoft),
       };
 
   @override
@@ -81,15 +79,12 @@ class TaskCard extends StatelessWidget {
                       switch (v) {
                         case 'duplicate':
                           onDuplicate();
-                        case 'archive':
-                          onArchive();
                         case 'delete':
                           onDelete();
                       }
                     },
                     itemBuilder: (context) => const [
                       PopupMenuItem(value: 'duplicate', child: Text('Duplicate')),
-                      PopupMenuItem(value: 'archive', child: Text('Archive')),
                       PopupMenuItem(value: 'delete', child: Text('Delete')),
                     ],
                   ),
@@ -115,10 +110,10 @@ class TaskCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(children: [
-                    Icon(Icons.calendar_today_outlined, size: 12, color: overdue ? const Color(0xFFEE4F4F) : p.textTertiary),
+                    Icon(Icons.calendar_today_outlined, size: 12, color: overdue ? AppColors.coral600 : p.textTertiary),
                     const SizedBox(width: 4),
-                    Text(DateFormat('MMM d').format(task.due),
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: overdue ? const Color(0xFFEE4F4F) : p.textTertiary)),
+                    Text(task.due == null ? 'No due date' : DateFormat('MMM d').format(task.due!),
+                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: overdue ? AppColors.coral600 : p.textTertiary)),
                   ]),
                   Text(task.estimate, style: Theme.of(context).textTheme.bodySmall),
                 ],

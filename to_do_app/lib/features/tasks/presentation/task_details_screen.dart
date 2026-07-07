@@ -3,10 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_badge.dart';
 import '../../../core/widgets/app_progress_bar.dart';
 import '../../../core/widgets/priority_dot.dart';
+import '../../../data/models/tag_model.dart';
+import '../../../data/repositories/subtask_repository.dart';
+import '../../../data/repositories/tag_repository.dart';
 import '../../../data/repositories/task_repository.dart';
 import '../cubit/task_details_cubit.dart';
 
@@ -17,7 +21,12 @@ class TaskDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TaskDetailsCubit(context.read<TaskRepository>(), taskId),
+      create: (context) => TaskDetailsCubit(
+        context.read<TaskRepository>(),
+        context.read<SubtaskRepository>(),
+        context.read<TagRepository>(),
+        taskId,
+      ),
       child: const _TaskDetailsView(),
     );
   }
@@ -72,7 +81,7 @@ class _TaskDetailsView extends StatelessWidget {
                     const SizedBox(width: 4),
                     Text('${task.priority.label} priority', style: Theme.of(context).textTheme.bodyMedium),
                   ]),
-                  Text('Due ${DateFormat('MMM d, y').format(task.due)}', style: Theme.of(context).textTheme.bodyMedium),
+                  Text(task.due == null ? 'No due date' : 'Due ${DateFormat('MMM d, y').format(task.due!)}', style: Theme.of(context).textTheme.bodyMedium),
                 ]),
                 const SizedBox(height: 18),
                 Container(
@@ -94,30 +103,34 @@ class _TaskDetailsView extends StatelessWidget {
                       const SizedBox(height: 18),
                       Text('SUBTASKS', style: Theme.of(context).textTheme.labelSmall),
                       const SizedBox(height: 4),
-                      if (task.subtasks.isEmpty)
+                      if ((task.subtasks ?? const []).isEmpty)
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Text('No subtasks added.', style: Theme.of(context).textTheme.bodyMedium),
                         )
                       else
-                        ...task.subtasks.asMap().entries.map((e) {
-                          final done = cubit.isSubtaskDone(e.key);
+                        ...(task.subtasks ?? const []).map((s) {
                           return CheckboxListTile(
-                            value: done,
-                            onChanged: (_) => cubit.toggleSubtask(e.key),
+                            value: s.isDone,
+                            onChanged: (_) => cubit.toggleSubtask(s),
                             controlAffinity: ListTileControlAffinity.leading,
                             contentPadding: EdgeInsets.zero,
                             dense: true,
+                            secondary: IconButton(
+                              icon: const Icon(Icons.close_rounded, size: 18),
+                              onPressed: () => cubit.deleteSubtask(s),
+                            ),
                             title: Text(
-                              e.value,
+                              s.title,
                               style: TextStyle(
                                 fontSize: 13.5,
-                                decoration: done ? TextDecoration.lineThrough : null,
-                                color: done ? p.textTertiary : p.textPrimary,
+                                decoration: s.isDone ? TextDecoration.lineThrough : null,
+                                color: s.isDone ? p.textTertiary : p.textPrimary,
                               ),
                             ),
                           );
                         }),
+                      _AddSubtaskField(onAdd: cubit.addSubtask),
                     ],
                   ),
                 ),
@@ -157,10 +170,18 @@ class _TaskDetailsView extends StatelessWidget {
                       _detailRow(context, 'Category', task.category.label),
                       _detailRow(context, 'Estimated time', task.estimate),
                       _detailRow(context, 'Created', DateFormat('MMM d, y').format(task.createdAt), showDivider: false),
-                      if (task.tags.isNotEmpty) ...[
-                        const Divider(height: 24),
-                        Wrap(spacing: 6, children: task.tags.map((t) => Chip(label: Text('#$t', style: const TextStyle(fontSize: 11)))).toList()),
-                      ],
+                      const Divider(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('TAGS', style: Theme.of(context).textTheme.labelSmall),
+                          TextButton(onPressed: () => _showTagEditor(context, cubit, task.tags), child: const Text('Edit tags')),
+                        ],
+                      ),
+                      if (task.tags.isNotEmpty)
+                        Wrap(spacing: 6, children: task.tags.map((t) => Chip(label: Text('#${t.label}', style: const TextStyle(fontSize: 11)))).toList())
+                      else
+                        Text('No tags yet.', style: Theme.of(context).textTheme.bodyMedium),
                     ],
                   ),
                 ),
@@ -184,6 +205,115 @@ class _TaskDetailsView extends StatelessWidget {
       ]),
     );
   }
+
+  void _showTagEditor(BuildContext context, TaskDetailsCubit cubit, List<TagModel> currentTags) async {
+    final allTags = await cubit.fetchAllTags();
+    final selected = currentTags.map((t) => t.id).toSet();
+    final newTagController = TextEditingController();
+    if (!context.mounted) return;
+    await showDialog(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setState) {
+          return AlertDialog(
+            title: const Text('Edit tags'),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: allTags.map((tag) {
+                      final isSelected = selected.contains(tag.id);
+                      return FilterChip(
+                        label: Text(tag.label),
+                        selected: isSelected,
+                        onSelected: (v) => setState(() => v ? selected.add(tag.id) : selected.remove(tag.id)),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(child: TextField(controller: newTagController, decoration: const InputDecoration(hintText: 'New tag', isDense: true))),
+                      IconButton(
+                        icon: const Icon(Icons.add_rounded),
+                        onPressed: () async {
+                          final label = newTagController.text.trim();
+                          if (label.isEmpty) return;
+                          final tag = await cubit.createTag(label);
+                          setState(() {
+                            allTags.add(tag);
+                            selected.add(tag.id);
+                            newTagController.clear();
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(onPressed: () => Navigator.of(dialogContext).pop(), child: const Text('Cancel')),
+              TextButton(
+                onPressed: () {
+                  cubit.setTags(selected.toList());
+                  Navigator.of(dialogContext).pop();
+                },
+                child: const Text('Save'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _AddSubtaskField extends StatefulWidget {
+  final ValueChanged<String> onAdd;
+  const _AddSubtaskField({required this.onAdd});
+
+  @override
+  State<_AddSubtaskField> createState() => _AddSubtaskFieldState();
+}
+
+class _AddSubtaskFieldState extends State<_AddSubtaskField> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    if (_controller.text.trim().isEmpty) return;
+    widget.onAdd(_controller.text);
+    _controller.clear();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(hintText: 'Add a subtask…', isDense: true),
+              onSubmitted: (_) => _submit(),
+            ),
+          ),
+          IconButton(icon: const Icon(Icons.add_rounded), onPressed: _submit),
+        ],
+      ),
+    );
+  }
 }
 
 class _TimelineTab extends StatelessWidget {
@@ -197,7 +327,7 @@ class _TimelineTab extends StatelessWidget {
       ('Task created', task.createdAt, true),
       ('Work started', task.createdAt.add(const Duration(days: 1)), task.progress > 0),
       ('Halfway checkpoint', task.createdAt.add(const Duration(days: 3)), task.progress >= 50),
-      (task.status.name == 'completed' ? 'Task completed' : 'Due date', task.due, task.status.name == 'completed'),
+      (task.status.name == 'completed' ? 'Task completed' : 'Due date', task.due ?? task.createdAt, task.status.name == 'completed'),
     ];
     return ListView.builder(
       padding: const EdgeInsets.all(16),
@@ -213,7 +343,7 @@ class _TimelineTab extends StatelessWidget {
                 width: 14,
                 height: 14,
                 margin: const EdgeInsets.only(top: 2),
-                decoration: BoxDecoration(shape: BoxShape.circle, color: done ? const Color(0xFF22C58B) : Colors.transparent, border: Border.all(color: done ? const Color(0xFF22C58B) : p.borderStrong, width: 2)),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: done ? AppColors.mint500 : Colors.transparent, border: Border.all(color: done ? AppColors.mint500 : p.borderStrong, width: 2)),
               ),
               const SizedBox(width: 12),
               Expanded(

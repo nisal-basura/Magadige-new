@@ -87,7 +87,6 @@ class _DreamsView extends StatelessWidget {
                             context,
                             dream: d,
                             relatedTasks: state.relatedTasks(d),
-                            onBumpProgress: () => cubit.bumpProgress(d),
                             onDelete: () => cubit.deleteDream(d),
                           ),
                         ),

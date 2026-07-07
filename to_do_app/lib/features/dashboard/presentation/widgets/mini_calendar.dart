@@ -15,7 +15,7 @@ class MiniCalendar extends StatelessWidget {
     final firstOfMonth = DateTime(now.year, now.month, 1);
     final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
     final leadingBlanks = firstOfMonth.weekday % 7; // Sunday-start grid
-    final taskDays = tasks.map((t) => t.due.day).toSet();
+    final taskDays = tasks.where((t) => t.due != null).map((t) => t.due!.day).toSet();
 
     return Container(
       padding: const EdgeInsets.all(16),

@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/auth/session_cubit.dart';
+import '../../../core/network/api_exception.dart';
 import '../../../core/utils/form_status.dart';
 import '../../../data/repositories/auth_repository.dart';
 
@@ -35,10 +37,13 @@ class RegisterState extends Equatable {
     return score;
   }
 
+  // The full server-side policy (mixed case + digit + symbol + breach check)
+  // is enforced by the backend and surfaced via a 422 if not met — this is
+  // just a floor to avoid obviously-doomed submissions.
   bool get isValid =>
       name.trim().isNotEmpty &&
       email.contains('@') &&
-      password.length >= 6 &&
+      password.length >= 8 &&
       password == confirmPassword &&
       agreedToTerms;
 
@@ -71,8 +76,9 @@ class RegisterState extends Equatable {
 
 class RegisterCubit extends Cubit<RegisterState> {
   final AuthRepository _repository;
+  final SessionCubit _session;
 
-  RegisterCubit(this._repository) : super(const RegisterState());
+  RegisterCubit(this._repository, this._session) : super(const RegisterState());
 
   void nameChanged(String v) => emit(state.copyWith(name: v, status: FormStatus.initial));
 
@@ -98,8 +104,16 @@ class RegisterCubit extends Cubit<RegisterState> {
     }
     emit(state.copyWith(status: FormStatus.submitting));
     try {
-      await _repository.register(name: state.name, email: state.email, password: state.password);
+      final user = await _repository.register(
+        name: state.name,
+        email: state.email,
+        password: state.password,
+        passwordConfirmation: state.confirmPassword,
+      );
+      _session.setAuthenticated(user);
       emit(state.copyWith(status: FormStatus.success));
+    } on ApiException catch (e) {
+      emit(state.copyWith(status: FormStatus.failure, error: e.displayMessage));
     } catch (e) {
       emit(state.copyWith(status: FormStatus.failure, error: 'Something went wrong. Please try again.'));
     }
